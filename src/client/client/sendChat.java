@@ -6,12 +6,12 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 
-public class sendChat extends Thread {
+public class SendChat extends Thread {
 
 	ObjectOutputStream oos;
 	Socket s1;
 
-	public sendChat(Socket s1) {
+	public SendChat(Socket s1) {
 		// TODO Auto-generated constructor stub
 
 		try {
@@ -38,11 +38,19 @@ public class sendChat extends Thread {
 					
 				HashMap<Object,Object> repMap = null;
 				
+				
+				
+				
 				while(true) {
 
+					
+					
 
 					String command ="";
+					String window = null;
 					
+					
+	
 					
 					
 					
@@ -53,11 +61,15 @@ public class sendChat extends Thread {
 					oos.flush();
 					
 		
-		
+					}
+					
 		
 				}
 	
 	
+		}catch(Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	
 	}
