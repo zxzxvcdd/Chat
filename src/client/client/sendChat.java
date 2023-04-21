@@ -11,6 +11,8 @@ public class SendChat extends Thread {
 	ObjectOutputStream oos;
 	Socket s1;
 
+	static HashMap<Object, Object> reqMap;
+
 	public SendChat(Socket s1) {
 		// TODO Auto-generated constructor stub
 
@@ -30,47 +32,28 @@ public class SendChat extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		super.run();
-		
-		
+
 		try {
-			
 
-					
-				HashMap<Object,Object> repMap = null;
-				
-				
-				
-				
-				while(true) {
+			while (true) {
+				if (reqMap.get("command") != null) {
 
-					
-					
-
-					String command ="";
+					String command = "";
 					String window = null;
-					
-					
-	
-					
-					
-					
-	
-					
-					
-					oos.writeObject(repMap);
+
+					oos.writeObject(reqMap);
 					oos.flush();
-					
-		
-					}
-					
-		
+
 				}
-	
-	
-		}catch(Exception e) {
+
+				resMap.remove("command");
+
+			}
+
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+
 	}
 }

@@ -420,36 +420,45 @@ public class ServerDAOImpl implements ServerDAO {
 
 	@Override
 	public boolean saveFile(FileDTO file) {
-		// TODO Auto-generated method stub
-
-		String sql = "insert into files(file_id, file_path, employee_id, chat_id)"
-				+ " values(file_seq_NEXTVAL, ?, ?, ?)";
-
-		try {
-			pst = con.prepareStatement(sql);
-
-			pst.setString(1, file.getFilePath());
-			pst.setInt(2, file.getEmployeeId());
-			pst.setInt(3, file.getChatId());
-
-			int result = pst.executeUpdate();
-
-			if (result >= 1) {
-				return true;
-			} else {
-				return false;
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-
-			System.out.println("saveFile error");
-
-			return false;
-
-		}
-
-	}
+	      // TODO Auto-generated method stub
+	      
+	      String sql = "insert into files(file_id, file_path, employee_id, chat_id, file_name)"
+	            +             " values(file_seq_NEXTVAL, ?, ?, ?, ?)";
+	         
+	      
+	      try {
+	         pst = con.prepareStatement(sql);
+	         
+	         pst.setString(1, file.getFilePath());
+	         pst.setInt(2, file.getEmployeeId());
+	         pst.setInt(3, file.getChatId());
+	         pst.setString(4, file.getFileName());
+	         
+	         
+	         
+	         int result = pst.executeUpdate();
+	         
+	          
+	         
+	         if(result>=1) {
+	            return true;
+	         }else {
+	            return false;
+	         }
+	         
+	         
+	         
+	      } catch (SQLException e) {
+	         e.printStackTrace();
+	         
+	         System.out.println("saveFile error");
+	         
+	         return false;
+	         
+	      }
+	   
+	      
+	   }
 
 	@Override
 	public FileDTO findFile(FileDTO file) {

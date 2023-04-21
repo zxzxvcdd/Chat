@@ -76,12 +76,10 @@ public class MulThread extends Thread {
 			case "login":
 				
 				
-				(EmpDTO)reqMap.get("EmpDTO");
+//				(EmpDTO)reqMap.get("EmpDTO");
 				
 				
 				
-				//로그인 성공시 채팅스레드 생성
-				ServerController.CreateChatThread();
 				
 //				resMap.put("command",);
 				
@@ -103,7 +101,7 @@ public class MulThread extends Thread {
 			case "findChat":
 				
 				
-				(EmpDTO)reqMap.get("EmpDTO");
+//				(EmpDTO)reqMap.get("EmpDTO");
 		
 //				resMap.put("command",);
 				
@@ -113,7 +111,7 @@ public class MulThread extends Thread {
 			case "find1v1":
 				
 				
-				(EmpDTO)reqMap.get("EmpDTO");
+//				(EmpDTO)reqMap.get("EmpDTO");
 				
 				
 //				resMap.put("command",);
@@ -130,23 +128,28 @@ public class MulThread extends Thread {
 			case "send":
 				
 				//채팅방 번호를 받아서 채팅룸을 찾고 채팅파일 업데이트 후 소속된 사원들에게 전송
-				int chatId;
-				String chat;
-				ChatInfo targetRoom = null;
-				
-				for(ChatInfo room : roomList){
-					
-					if(room.getChatListDTO().getChatId() == chatId) {
-						targetRoom = room;
-						break;
-					}
-	
-				}
-				
-				ServerController.findChatThread(chat, targetRoom,false);
-				
-				
-				
+//				int chatId;
+//				String chat = null;
+//				ChatInfo targetRoom = null;
+//				
+//				for(ChatInfo room : roomList){
+//					
+//					if(room.getChatListDTO().getChatId() == chatId) {
+//						targetRoom = room;
+//						break;
+//					}
+//	
+//				}
+//				
+//				try {
+//					ServerController.findChatThread(chat, targetRoom,false);
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				
+//				
+//				
 				break;
 				
 			
@@ -179,7 +182,7 @@ public class MulThread extends Thread {
 		
 		HashMap<Object, Object> resMap = new HashMap<Object, Object>();
 		
-		String resCommand = "chat";
+		String resCommand = "sendchat";
 		
 		resMap.put("command",resCommand);
 		resMap.put("chatString",chat);
