@@ -20,14 +20,14 @@ public class MulThread extends Thread {
 	ObjectOutputStream oos;
 	ChatInfo room;
 	EmpDTO emp;
-	int portNo2;
+	
 	 
 	
 	
-	public MulThread(Socket s1,int portNo2){
+	public MulThread(Socket s1){
 		try {
 		this.socket = s1;
-		this.portNo2 = portNo2;
+		
 		oos = new ObjectOutputStream(s1.getOutputStream());
 		
 		ois = new ObjectInputStream(s1.getInputStream());
@@ -77,7 +77,12 @@ public class MulThread extends Thread {
 				(EmpDTO)reqMap.get("EmpDTO");
 				
 				
+				
+				//로그인 성공시 채팅스레드 생성
+				ServerController.CreateChatThread();
+				
 //				resMap.put("command",);
+				
 				
 				
 				break;
