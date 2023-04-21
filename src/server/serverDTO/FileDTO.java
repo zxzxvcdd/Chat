@@ -1,9 +1,12 @@
 package server.serverDTO;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class FileDTO {
+public class FileDTO implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+			
 	private int employeeId;
 	private int fileId;
 	private String fileName;

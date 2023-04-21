@@ -37,7 +37,7 @@ public interface ServerDAO {
 	
 	public boolean joinChat(int empId, int chatId);
 
-	public ChatUserDTO findChatUser(Map<String, Object> checkMap);
+	public List<ChatUserDTO> findChatUser(Map<String, Object> checkMap);
 	
 	
 	

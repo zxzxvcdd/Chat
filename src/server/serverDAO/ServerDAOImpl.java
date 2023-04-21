@@ -377,7 +377,7 @@ public class ServerDAOImpl implements ServerDAO {
 	}
 
 	@Override
-	public ChatUserDTO findChatUser(Map<String, Object> checkMap) {
+	public List<ChatUserDTO> findChatUser(Map<String, Object> checkMap) {
 		// TODO Auto-generated method stub
 
 		String sql = "select * from chat_users where ? = ?";
@@ -393,9 +393,19 @@ public class ServerDAOImpl implements ServerDAO {
 
 			rs = pst.executeQuery();
 
-			ChatUserDTO user = new ChatUserDTO(rs.getInt("user_i"), rs.getInt("employee_id"), rs.getInt("chat_id"));
+			List<ChatUserDTO> userList = null;
+			while (rs.next()) {
 
-			return user;
+				ChatUserDTO user = new ChatUserDTO(rs.getInt("user_i"), rs.getInt("employee_id"), rs.getInt("chat_id"));
+
+
+				
+				userList.add(user);
+
+			}
+			
+			
+			return userList;
 
 		} catch (SQLException e) {
 			e.printStackTrace();

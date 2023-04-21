@@ -1,5 +1,6 @@
-package server.serverService;
+package server.serverController;
 
+import server.serverDTO.ChatInfo;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,9 +11,8 @@ import java.util.List;
 public class ServerController {
 
 	List<MulThread> threadList = new ArrayList<MulThread>();
-	List<ChatThread> chatThreadList = new ArrayList<ChatThread>();
+	
 	Socket socket;
-
 
 	public ServerController(int portNo1, int portNo2) throws IOException {
 
@@ -20,9 +20,6 @@ public class ServerController {
 		
 		ServerSocket ss1 = new ServerSocket(portNo1);
 		System.out.println("Server Listening port " + portNo1);
-
-		ServerSocket ss2 = new ServerSocket(portNo2);
-		System.out.println("Server Listening port " + portNo2);
 		
 		while (true) {
 			s1 = ss1.accept();
@@ -39,9 +36,12 @@ public class ServerController {
 			
 			
 		} 
+		
+		
 
+
+	
 	}
-
-
+	
 
 }

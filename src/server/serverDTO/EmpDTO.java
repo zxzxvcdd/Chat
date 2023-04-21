@@ -1,6 +1,10 @@
 package server.serverDTO;
 
-public class EmpDTO {
+import java.io.Serializable;
+
+public class EmpDTO implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int employeeId;
 	private String pw;
