@@ -15,14 +15,14 @@ import java.util.Set;
 
 public class ServerController {
 
-	List<MulThread> threadList = new ArrayList<MulThread>();
+	private List<MulThread> threadList = new ArrayList<MulThread>();
 	static List<ChatThread> chatThreadList = new ArrayList<ChatThread>();
 	
-	Socket s1;
+	private Socket s1;
 	static Socket s2;
 	
-	ServerSocket ss1;
-	static ServerSocket ss2;
+	private ServerSocket ss1;
+	static private ServerSocket ss2;
 	
 	public ServerController(int portNo1, int portNo2) throws IOException {
 

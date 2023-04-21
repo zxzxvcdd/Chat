@@ -113,7 +113,7 @@ public class ChatThread extends Thread {
 	
 				}
 				
-				ChatController.findChatThread(chat, targetRoom,false);
+				ServerController.findChatThread(chat, targetRoom,false);
 				
 				
 				
