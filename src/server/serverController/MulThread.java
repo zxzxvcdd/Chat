@@ -20,13 +20,14 @@ public class MulThread extends Thread {
 	ObjectOutputStream oos;
 	ChatInfo room;
 	EmpDTO emp;
+	int portNo2;
 	 
 	
 	
-	public MulThread(Socket s1){
+	public MulThread(Socket s1,int portNo2){
 		try {
 		this.socket = s1;
-
+		this.portNo2 = portNo2;
 		oos = new ObjectOutputStream(s1.getOutputStream());
 		
 		ois = new ObjectInputStream(s1.getInputStream());
