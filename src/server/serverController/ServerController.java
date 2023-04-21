@@ -15,21 +15,16 @@ import java.util.Set;
 
 public class ServerController {
 
-	private List<MulThread> threadList = new ArrayList<MulThread>();
-	static List<ChatThread> chatThreadList = new ArrayList<ChatThread>();
-	
+	private static List<MulThread> threadList = new ArrayList<MulThread>();
+
 	private Socket s1;
-	static Socket s2;
-	
+
 	private ServerSocket ss1;
-	static private ServerSocket ss2;
-	
+
 	public ServerController(int portNo1, int portNo2) throws IOException {
 
 		
-		ss2 = new ServerSocket(portNo2);
-		System.out.println("Server Listening port " + portNo2);
-		
+
 		ss1 = new ServerSocket(portNo1);
 		System.out.println("Server Listening port " + portNo1);
 		
@@ -53,22 +48,6 @@ public class ServerController {
 	}
 	
 	
-	public static void CreateChatThread() throws IOException {
-
-		
-			s2 = ss2.accept();
-			System.out.println("立加林家: " + s2.getInetAddress() + " , 立加器飘: " + s2.getPort());
-			
-			ChatThread tServer = new ChatThread(s2);
-			
-			tServer.start();
-
-			chatThreadList.add(tServer);
-
-		
-	}
-	
-	
 	
 	
 	
@@ -85,15 +64,15 @@ public class ServerController {
 		
 		}
 		
-		for (ChatThread chatThread : chatThreadList) {
+		for (MulThread mulThread :  threadList) {
 			
 			
-			if(userIdList.contains(chatThread.getEmp().getEmployeeId()))
+			if(userIdList.contains(mulThread.getEmp().getEmployeeId()))
 			{
 				//update 蔼 true老 矫 room狼 蜡历府胶飘 诀单捞飘
 				if(update) {
 					
-					for(ChatInfo target : chatThread.getRoomList()) {
+					for(ChatInfo target : mulThread.getRoomList()) {
 						
 						if(target.getChatListDTO().getChatId()==chatId ) {
 							target.setChatListDTO(chatRoom);
@@ -105,7 +84,7 @@ public class ServerController {
 					
 				}
 				
-				chatThread.sendChat(chat,chatId);
+				mulThread.sendChat(chat,chatId);
 				
 			}
 				

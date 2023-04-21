@@ -36,28 +36,22 @@ public class sendChat extends Thread {
 			
 
 					
-				HashMap<Object,Object> resMap = null;
+				HashMap<Object,Object> repMap = null;
 				
 				while(true) {
 
 
-					String command;
-					resMap = (HashMap<Object,Object>)ois.readObject();
-						
-					command = (String)resMap.get("command");
+					String command ="";
 					
-					switch(command) {
 					
-					case "empList" :
-						
-						
-						break;
-						
-					case "LoginSucces":
-						
-						break;
-
-					}
+					
+					
+	
+					
+					
+					oos.writeObject(repMap);
+					oos.flush();
+					
 		
 		
 		
