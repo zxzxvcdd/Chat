@@ -136,7 +136,19 @@ public class MulThread extends Thread {
 //				}
 //				
 //				try {
-//					ServerController.findChatThread(chat, targetRoom,false);
+//					List<MulThread> roomThreads = findChatThread(targetRoom,false);
+					
+//					for(MulThread target : rommThreads) {
+//						
+//						target.sendChat(chat, chatId);
+//						if(update) {
+//							
+//							target.updateRoom();
+//						}
+//						
+//					}
+//				
+					
 //				} catch (IOException e) {
 //					// TODO Auto-generated catch block
 //					e.printStackTrace();
