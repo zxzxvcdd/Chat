@@ -14,6 +14,8 @@ public class ChatClient {
 		Socket s1;
 		ObjectInputStream ois;
 		ObjectOutputStream oos;
+//		static List<ChatRoomFrame> chatList;
+		
 		
 		try {
 			
@@ -22,17 +24,17 @@ public class ChatClient {
 			s1 = new Socket("127.0.0.1", 4452);
 			System.out.println(s1.getInetAddress().getHostAddress() + " ¿¬°áµÊ");
 
+			
+			
 
 			ois = new ObjectInputStream(s1.getInputStream());
 			oos = new ObjectOutputStream(s1.getOutputStream());
 			
-			new ClientTestFrame(ois,oos) {
-		          public void closeWork() throws IOException {
-			           oos.close();
-			           ois.close();
-			           System.exit(0);
-		       }
-			};
+			RcvThread rcv = new RcvThread(ois);
+			
+			rcv.start();
+			
+			new ClientTestFrame(oos);
 			
 			
 			
