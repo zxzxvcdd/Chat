@@ -14,6 +14,8 @@ public interface ServerDAO {
 	
 	public boolean joinEmployees(EmpDTO emp);
 	
+	public boolean login(int id, String pw);
+	
 	public List<EmpDTO> findAllEmployees();
 	
 	public EmpDTO findOneEmployees(int empId);

@@ -67,6 +67,47 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 
 	}
+	
+	@Override
+	public boolean login(int id, String pw) {		//·Î±×ÀÎ
+		 
+		String sql = "select employee_id, pw from employees where employee_id = ? and pw = ?";
+		int Id;
+		String Pw;
+		boolean a = true;
+		
+		try {
+			pst = con.prepareStatement(sql);
+			
+			pst.setInt(1, id);
+			pst.setString(2, pw);
+			
+			rs = pst.executeQuery();
+			
+			rs.next();
+				Id = rs.getInt("employee_id");
+				Pw = rs.getString("pw");
+				
+				if((Id == id) && Pw.equals(pw)) {
+					a= true;
+				}else {
+					a= false;
+				}
+			
+			
+			if(a) {
+				return true;
+			}else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		
+		
+	}
 
 	@Override
 	public List<EmpDTO> findAllEmployees() {
@@ -113,6 +154,7 @@ public class ServerDAOImpl implements ServerDAO {
 			pst = con.prepareStatement(sql);
 			rs = pst.executeQuery();
 
+			rs.next();
 			EmpDTO emp = new EmpDTO(rs.getInt("employee_id"), rs.getString("pw"), rs.getString("name"),
 					rs.getInt("department_id"), rs.getString("tel"), rs.getString("admin"), rs.getString("job_title"));
 
@@ -237,6 +279,8 @@ public class ServerDAOImpl implements ServerDAO {
 
 			rs = pst.executeQuery();
 
+			rs.next();
+			
 			int result = rs.getInt(1);
 
 			return result;
@@ -269,7 +313,7 @@ public class ServerDAOImpl implements ServerDAO {
 			pst.setInt(1, chatId1);
 			pst.setInt(2, chatId2);
 			rs = pst.executeQuery();
-
+			rs.next();
 			ChatListDTO chat = new ChatListDTO(rs.getInt("chat_id"), rs.getString("chat_name"),
 					rs.getString("chat_path"));
 
@@ -297,7 +341,7 @@ public class ServerDAOImpl implements ServerDAO {
 			pst.setInt(1, chatId);
 
 			rs = pst.executeQuery();
-
+			rs.next();
 			ChatListDTO chat = new ChatListDTO(rs.getInt("chat_id"), rs.getString("chat_name"),
 					rs.getString("chat_path"));
 
@@ -325,7 +369,7 @@ public class ServerDAOImpl implements ServerDAO {
 
 			pst.setString(1, filePath);
 			pst.setInt(2, chatId);
-
+			
 			int result = pst.executeUpdate();
 
 			if (result >= 1) {
@@ -392,7 +436,7 @@ public class ServerDAOImpl implements ServerDAO {
 			pst.setInt(2, value);
 
 			rs = pst.executeQuery();
-
+			
 			List<ChatUserDTO> userList = null;
 			while (rs.next()) {
 
@@ -470,7 +514,7 @@ public class ServerDAOImpl implements ServerDAO {
 			pst.setInt(1, file.getFileId());
 
 			rs = pst.executeQuery();
-
+			rs.next();
 			file.setEmployeeId(rs.getInt("employee_id"));
 			file.setChatId(rs.getInt("chat_id"));
 			file.setFileName(rs.getString("file_name"));
@@ -501,7 +545,7 @@ public class ServerDAOImpl implements ServerDAO {
 			pst.setInt(1, depId);
 
 			rs = pst.executeQuery();
-
+			rs.next();
 			DepDTO dep = new DepDTO();
 
 			dep.setDepartmentId(depId);
