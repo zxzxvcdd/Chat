@@ -21,12 +21,12 @@ public class ServerController {
 
 	private ServerSocket ss1;
 
-	public ServerController(int portNo1, int portNo2) throws IOException {
+	public ServerController(int portNo) throws IOException {
 
 		
 
-		ss1 = new ServerSocket(portNo1);
-		System.out.println("Server Listening port " + portNo1);
+		ss1 = new ServerSocket(portNo);
+		System.out.println("Server Listening port " + portNo);
 		
 		while (true) {
 			s1 = ss1.accept();

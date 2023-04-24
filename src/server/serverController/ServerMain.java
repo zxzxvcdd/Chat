@@ -9,12 +9,13 @@ public class ServerMain {
 	
 		
 		
-		if(args.length !=2) {
-			
-		System.out.println("포트번호 두개를 입력");
-		}
+//		if(args.length !=1) {
+//			
+//		System.out.println("포트번호를 입력");
+//		}
 
-		ServerController server = new ServerController(Integer.parseInt(args[0]),Integer.parseInt(args[1]));
+//		ServerController server = new ServerController(Integer.parseInt(args[0]));
+		ServerController server = new ServerController(4449);
 		
 	}
 	

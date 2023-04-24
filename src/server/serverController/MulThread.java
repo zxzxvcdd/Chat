@@ -46,11 +46,14 @@ public class MulThread extends Thread {
 		
 		while(socket.isConnected()) {
 			
+			System.out.println("소켓연결");
+			
+			
 			HashMap<Object, Object> reqMap = null;
-			HashMap<Object, Object> resMap = null;
+			HashMap<Object, Object> resMap = new HashMap<Object, Object>();
 			
 			try {
-				resMap = (HashMap<Object, Object>)ois.readObject();
+				reqMap = (HashMap<Object, Object>)ois.readObject();
 				
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -59,13 +62,26 @@ public class MulThread extends Thread {
 			
 			String command = (String)reqMap.get("command");
 			
-			
+			System.out.println("req  : "+command);
+			try {
 			/// 커맨드값으로 수행할 서비스를 선택
 			switch(command) {
 			
 			case "join":
 				
+				System.out.println("크기"+reqMap.size());
+				System.out.println((String)reqMap.get("name"));
 				
+				String input = (String)reqMap.get("name");
+				
+				resMap.put("command", "afterJoin");
+				resMap.put("afterJoin", input);
+				
+				
+				oos.writeObject(resMap);
+				oos.flush();
+		
+						
 //				(EmpDTO)reqMap.get("EmpDTO");
 		
 //				resMap.put("command",);
@@ -153,6 +169,12 @@ public class MulThread extends Thread {
 				break;
 				
 			
+			}
+			
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
 			
