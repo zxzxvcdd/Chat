@@ -116,6 +116,41 @@ public class MulThread extends Thread {
 					break;
 
 				case "invite":
+					
+					//챗아이디랑, 초대하는 emp아이디 받아서 꺼내고
+					//service.초대
+//					int chatId;
+//					String chat = null;
+//						boolean update = false;
+//					ChatInfo targetRoom = null;
+//					
+//					for(ChatInfo room : roomList){
+//						
+//						if(room.getChatListDTO().getChatId() == chatId) {
+//							targetRoom = room;
+//							break;
+//						}
+	//	
+//					}
+//					
+//					try {
+//						List<MulThread> roomThreads = findChatThread(targetRoom,false);
+						
+//						for(MulThread target : rommThreads) {
+//							target.updateRoom();
+//							target.sendChat(chat, chatId);
+//							
+//						}
+//					
+						
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					
+//					
+//				
+					
 
 					break;
 
@@ -124,6 +159,7 @@ public class MulThread extends Thread {
 					// 채팅방 번호를 받아서 채팅룸을 찾고 채팅파일 업데이트 후 소속된 사원들에게 전송
 //				int chatId;
 //				String chat = null;
+//					boolean update = false;
 //				ChatInfo targetRoom = null;
 //				
 //				for(ChatInfo room : roomList){
@@ -141,10 +177,6 @@ public class MulThread extends Thread {
 //					for(MulThread target : rommThreads) {
 //						
 //						target.sendChat(chat, chatId);
-//						if(update) {
-//							
-//							target.updateRoom();
-//						}
 //						
 //					}
 //				
