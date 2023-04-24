@@ -6,10 +6,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import server.serverDTO.ChatInfo;
+import server.serverDTO.ChatListDTO;
+import server.serverDTO.ChatUserDTO;
 import server.serverDTO.EmpDTO;
 import server.serverService.ChatService;
 
@@ -168,9 +173,10 @@ public class MulThread extends Thread {
 		return emp;
 	}
 
-	public void setEmp(EmpDTO emp) {
-		this.emp = emp;
+	public List<ChatInfo> getRoomList() {
+		return roomList;
 	}
+
 
 	public void sendChat(String chat, int chatId) throws IOException {
 
@@ -199,8 +205,55 @@ public class MulThread extends Thread {
 
 	}
 
-	public List<ChatInfo> getRoomList() {
-		return roomList;
+
+	
+	public List<MulThread> findChatThread(ChatInfo room, boolean update) throws IOException {
+
+		List<MulThread> roomThreads = new ArrayList<MulThread>();
+		
+		Set<Integer> userIdList = new HashSet<Integer>();
+		ChatUserDTO[] userList = room.getChatUserDTO();
+		ChatListDTO chatRoom = room.getChatListDTO();
+		int chatId = room.getChatListDTO().getChatId();
+		for(ChatUserDTO user : room.getChatUserDTO()) {
+
+			
+			userIdList.add(user.getUserId());
+		
+		}
+		
+		for (MulThread mulThread :  ServerController.threadList) {
+			
+			
+			if(userIdList.contains(mulThread.getEmp().getEmployeeId()))
+			{
+				//update 값 true일 시 room의 유저리스트 업데이트
+				if(update) {
+					
+					for(ChatInfo target : mulThread.getRoomList()) {
+						
+						if(target.getChatListDTO().getChatId()==chatId ) {
+							target.setChatListDTO(chatRoom);
+							target.setChatUserDTO(userList);
+							break;
+							
+						}
+						
+					}
+					
+				}
+				
+				roomThreads.add(mulThread);
+				
+				
+			}
+
+		}
+		
+		return roomThreads;
+
 	}
 
+
 }
+
