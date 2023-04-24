@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 public class ChatClient {
-
+	
+//	static List<ChatRoomFrame> chatList;
+	static List chatList;
 
     
 	public static void main(String[] args) {
@@ -14,7 +17,7 @@ public class ChatClient {
 		Socket s1;
 		ObjectInputStream ois;
 		ObjectOutputStream oos;
-//		static List<ChatRoomFrame> chatList;
+
 		
 		
 		try {

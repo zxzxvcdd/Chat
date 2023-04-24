@@ -1,5 +1,6 @@
 package client.client;
 
+import java.awt.Toolkit;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
@@ -38,6 +39,28 @@ public class RcvThread extends Thread {
 					ClientTestFrame.resMap = resMap;
 					
 					break;
+					
+					
+				case "chat":
+					Toolkit tk1=Toolkit.getDefaultToolkit(); //∫Ò«¡¿Ω
+					
+					
+					int chatId = (Integer)resMap.get("ChatId");
+					
+//					for(ChatRoomFrame Room : ChatClient.chatList) {
+//						
+//						if(room.getChatId == chatId) {
+//							
+//							room.call = true;
+//							room.resMap = resMap;
+//							break;
+//							
+//						}
+//						
+//					}
+					tk1.beep();
+					break;
+					
 					
 					
 
