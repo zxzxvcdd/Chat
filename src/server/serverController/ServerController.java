@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class ServerController {
 
-	private static List<MulThread> threadList = new ArrayList<MulThread>();
+	static List<MulThread> threadList = new ArrayList<MulThread>();
 
 	private Socket s1;
 
