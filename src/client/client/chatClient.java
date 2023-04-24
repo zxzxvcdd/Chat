@@ -9,7 +9,7 @@ import java.util.List;
 public class ChatClient {
 	
 //	static List<ChatRoomFrame> chatList;
-	static List chatList;
+
 
     
 	public static void main(String[] args) {

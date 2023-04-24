@@ -20,6 +20,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JToggleButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 
 public class ClientTestFrame extends JFrame implements Runnable, ActionListener {
 
@@ -56,6 +59,14 @@ public class ClientTestFrame extends JFrame implements Runnable, ActionListener 
 		JLabel lblNewLabel_1 = new JLabel("\uACB0\uACFC");
 		lblNewLabel_1.setBounds(160, 249, 193, 58);
 		getContentPane().add(lblNewLabel_1);
+		
+		JToggleButton tglbtnNewToggleButton = new JToggleButton("New toggle button");
+		tglbtnNewToggleButton.setBounds(89, 179, 244, 23);
+		getContentPane().add(tglbtnNewToggleButton);
+		
+		JCheckBox chckbxNewCheckBox = new JCheckBox("New check box");
+		chckbxNewCheckBox.setBounds(113, 232, 115, 23);
+		getContentPane().add(chckbxNewCheckBox);
 		setVisible(true);
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
