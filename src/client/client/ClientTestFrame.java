@@ -70,8 +70,6 @@ public class ClientTestFrame extends JFrame implements Runnable, ActionListener 
 
 				reqMap.put("name", textField.getText());
 
-				System.out.println(reqMap.get("name"));
-
 				try {
 					oos.writeObject(reqMap);
 					oos.flush();
@@ -108,24 +106,29 @@ public class ClientTestFrame extends JFrame implements Runnable, ActionListener 
 	public void run() {
 		// TODO Auto-generated method stub
 
+		System.out.println("testFrame Thread run");
+
 		try {
-			while (call) {
 
-				String resCom = (String) resMap.get("command");
+			while (true) {
+	
+				if (call) {
+					String resCom = (String) resMap.get("command");
 
-				System.out.println("서버응답 " + command);
-				switch (resCom) {
+					switch (resCom) {
 
-				case "afterJoin":
+					case "afterJoin":
 
-					String result = (String) resMap.get("afterJoin");
-					System.out.println("결과" + result);
-					lblNewLabel_1.setText(result);
+						String result = (String) resMap.get("afterJoin");
+						System.out.println("서버처리결과 : " + result);
+						lblNewLabel_1.setText(result);
+						call=false;
 
-					break;
+						break;
+
+					}
 
 				}
-
 			}
 
 		} catch (Exception e) {

@@ -25,21 +25,22 @@ public class RcvThread extends Thread {
 
 				resMap = (HashMap<Object, Object>) ois.readObject();
 
+				
 				String command = (String) resMap.get("command");
 
 				switch (command) {
 
-				case "join":
-
+				case "afterJoin":
+				case "afterLogin":
+					System.out.println(command);
 					ClientTestFrame.call = true;
+					System.out.println(ClientTestFrame.call);
 					ClientTestFrame.resMap = resMap;
 					
 					break;
 					
 					
-				case "login":
-					
-					break;
+
 				
 					
 

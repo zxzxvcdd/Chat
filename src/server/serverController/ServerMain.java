@@ -15,7 +15,7 @@ public class ServerMain {
 //		}
 
 //		ServerController server = new ServerController(Integer.parseInt(args[0]));
-		ServerController server = new ServerController(4452);
+		ServerController server = new ServerController(4456);
 		
 	}
 	
