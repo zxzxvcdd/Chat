@@ -72,7 +72,7 @@ public class RcvThread extends Thread {
 //					
 
 					case "chat":
-						Toolkit tk1 = Toolkit.getDefaultToolkit(); // ºñÇÁÀ½
+						Toolkit tk1 = Toolkit.getDefaultToolkit(); // ë¹„í”„ìŒ
 
 						int chatId = (Integer) resMap.get("ChatId");
 
@@ -99,6 +99,23 @@ public class RcvThread extends Thread {
 
 						
 
+						break;
+						
+					case "afterFindFileList": // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ fileListï¿½ï¿½ down guiï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+						FileDownGui.call = true;
+						FileDownGui.resMap = resMap;
+						if(resMap == null) System.out.println("yes");
+						else System.out.println("yes");
+						break;
+					
+					case "downContent": // ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ fileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ downguiï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+						FileDownGui.call = true;
+						FileDownGui.resMap = resMap;
+						break;
+						
+					case "saveFileFail":
+						FileUpGui.call = true;
+						FileUpGui.resMap = resMap;
 						break;
 
 					default:

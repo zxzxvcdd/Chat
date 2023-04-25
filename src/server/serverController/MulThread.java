@@ -10,6 +10,7 @@ import java.util.Map;
 
 import server.serverDTO.ChatInfo;
 import server.serverDTO.EmpDTO;
+import server.serverDTO.FileDTO;
 import server.serverService.ChatService;
 
 public class MulThread extends Thread {
@@ -56,7 +57,7 @@ public class MulThread extends Thread {
 
 				System.out.println("req  : " + command);
 
-				/// Ä¿¸Çµå°ªÀ¸·Î ¼öÇàÇÒ ¼­ºñ½º¸¦ ¼±ÅÃ
+				/// ì»¤ë§¨ë“œê°’ìœ¼ë¡œ ìˆ˜í–‰í•  ì„œë¹„ìŠ¤ë¥¼ ì„ íƒ
 				switch (command) {
 
 				case "join":
@@ -71,13 +72,13 @@ public class MulThread extends Thread {
 					  if(joinResult){
 						  resMap.put("command", "afterJoin");
 						  resMap.put("joinResult",joinResult); 
-						  System.out.println("¼º°ø");
+						  System.out.println("ì„±ê³µ");
 						  
 					  }
 					  else{
 						  resMap.put("command", "afterJoin");
 						  resMap.put("joinResult",joinResult); 
-						  System.out.println("½ÇÆĞ");
+						  System.out.println("ì‹¤íŒ¨");
 					  }
 					
 					
@@ -155,8 +156,8 @@ public class MulThread extends Thread {
 
 				case "invite":
 					
-					//Ãª¾ÆÀÌµğ¶û, ÃÊ´ëÇÏ´Â emp¾ÆÀÌµğ ¹Ş¾Æ¼­ ²¨³»°í
-					//service.ÃÊ´ë
+					//ì±—ì•„ì´ë””ë‘, ì´ˆëŒ€í•˜ëŠ” empì•„ì´ë”” ë°›ì•„ì„œ êº¼ë‚´ê³ 
+					//service.ì´ˆëŒ€
 //					int chatId;
 //					String chat = null;
 //						boolean update = false;
@@ -207,7 +208,7 @@ public class MulThread extends Thread {
 
 				case "send":
 
-					// Ã¤ÆÃ¹æ ¹øÈ£¸¦ ¹Ş¾Æ¼­ Ã¤ÆÃ·ëÀ» Ã£°í Ã¤ÆÃÆÄÀÏ ¾÷µ¥ÀÌÆ® ÈÄ ¼Ò¼ÓµÈ »ç¿øµé¿¡°Ô Àü¼Û
+					// ì±„íŒ…ë°© ë²ˆí˜¸ë¥¼ ë°›ì•„ì„œ ì±„íŒ…ë£¸ì„ ì°¾ê³  ì±„íŒ…íŒŒì¼ ì—…ë°ì´íŠ¸ í›„ ì†Œì†ëœ ì‚¬ì›ë“¤ì—ê²Œ ì „ì†¡
 //				int chatId;
 //				String chat = null;
 //					boolean update = false;
@@ -236,9 +237,48 @@ public class MulThread extends Thread {
 //					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
-//				
-//				
-//				
+
+
+					break;
+					
+					
+				case "findFileList": // serviceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ filelist ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ş¾ï¿½ Rcvï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+					int fchatId = (Integer)reqMap.get("chatId");
+					List<FileDTO> fileList = service.findFile(fchatId);
+					if(fileList != null) System.out.println("multhread ok");
+					else System.out.println("not ok");
+					
+					resMap.put("command", "afterFindFileList"); 
+					resMap.put("fileList", fileList);
+					
+					
+					break;
+					
+				case "downFile": // serviceï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ğ¿Í¼ï¿½ Rcvï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+					FileDTO fdto = (FileDTO)reqMap.get("fdto");
+					String dcontent = service.readFile(fdto);
+					resMap.put("command", "downContent");
+					resMap.put("content", dcontent);
+					break;
+					
+				case "saveFile":
+					String fileName = (String) reqMap.get("fileName");
+					int schatId = (Integer) reqMap.get("chatId");
+					int employeeId = (Integer) reqMap.get("employeeId");
+					String scontent = (String) reqMap.get("content");
+					Boolean writeFilePath;
+					try {
+						boolean saveFile = service.SaveFile(employeeId, schatId, fileName);
+						if(!saveFile) {
+							resMap.put("command", "saveFileFail");
+							boolean alarm = true;
+							reqMap.put("alarm", alarm);
+						}
+						else {
+							writeFilePath = service.writeFile(employeeId, schatId, fileName, scontent);
+							reqMap.put("writeFilePath", writeFilePath);
+						}
+					} catch (Exception e) {}					
 					break;
 
 				}
@@ -251,15 +291,15 @@ public class MulThread extends Thread {
 			// e.printStackTrace();
 
 		} finally {
-			// ³ª°£ ¾²·¹µåÀÇ ÀÎµ¦½º Ã£±â
+			// ë‚˜ê°„ ì“°ë ˆë“œì˜ ì¸ë±ìŠ¤ ì°¾ê¸°
 			for (int i = 0; i < ServerController.threadList.size(); i++) {
 				if (socket.equals(ServerController.threadList.get(i).socket)) {
 					ServerController.threadList.remove(i);
 
-					System.out.println("client ¿¬°á ÇØÁ¦");
+					System.out.println("client ì—°ê²° í•´ì œ");
 				}
 			}
-			System.out.println("Á¢¼ÓÀÚ ¼ö : " + ServerController.threadList.size() + " ¸í");
+			System.out.println("ì ‘ì†ì ìˆ˜ : " + ServerController.threadList.size() + " ëª…");
 		} // finally-end
 
 	}
@@ -322,7 +362,7 @@ public class MulThread extends Thread {
 //			
 //			if(userIdList.contains(mulThread.getEmp().getEmployeeId()))
 //			{
-//				//update °ª trueÀÏ ½Ã roomÀÇ À¯Àú¸®½ºÆ® ¾÷µ¥ÀÌÆ®
+//				//update ê°’ trueì¼ ì‹œ roomì˜ ìœ ì €ë¦¬ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
 //				if(update) {
 //					
 //					for(ChatInfo target : mulThread.getRoomList()) {

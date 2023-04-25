@@ -46,7 +46,8 @@ public interface ServerDAO {
 	
 	
 	
-
+	public List<FileDTO> findFileList(int chatId);
+	
 	public boolean saveFile(FileDTO file);
 	
 	public FileDTO findFile(FileDTO file);

@@ -83,7 +83,7 @@ public class ServerDAOImpl implements ServerDAO {
 	}
 
 	@Override
-	public boolean login(int id, String pw) { // ∑Œ±◊¿Œ
+	public boolean login(int id, String pw) { // Î°úÍ∑∏Ïù∏
 
 		String sql = "select employee_id, pw from employees where employee_id = ? and pw = ?";
 		int Id;
@@ -356,7 +356,7 @@ public class ServerDAOImpl implements ServerDAO {
 	}
 
 	@Override
-	public boolean accreditation(int id) { // ∫ª¿Œ¿Œ¡ı
+	public boolean accreditation(int id) { // Î≥∏Ïù∏Ïù∏Ï¶ù
 
 		String sql = "select employee_id from employees where employee_id = ?";
 		int Id;
@@ -561,6 +561,40 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 
 	}
+	
+	public List<FileDTO> findFileList(int chatId) { // ÔøΩﬂ∞ÔøΩÔøΩÔøΩÔøΩÔøΩ
+		String sql = "select * from files where chat_id = ?";
+		try {
+			pst = con.prepareStatement(sql);
+
+			pst.setInt(1, chatId);
+
+			rs = pst.executeQuery();
+			
+			List<FileDTO> fileList = new ArrayList<FileDTO>();
+			while (rs.next()) {
+
+				FileDTO file = new FileDTO();
+				file.setChatId(chatId);
+				file.setEmployeeId(rs.getInt("employee_id"));
+				file.setFileName(rs.getString("file_name"));
+				file.setFilePath(rs.getString("file_path"));
+				file.setFileId(rs.getInt("file_id"));	
+				file.setUploadTime(rs.getDate("upload_time"));
+				fileList.add(file);
+			}			
+			return fileList;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+			System.out.println("findFileList error");
+
+			return null;
+
+		}
+
+	};
 
 	@Override
 	public boolean saveFile(FileDTO file) {

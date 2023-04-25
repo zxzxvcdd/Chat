@@ -28,6 +28,14 @@ public class FileDTO implements Serializable {
 		this.uploadTime = uploadTime;
 	}
 
+	public Date getUploadTime() {
+		return uploadTime;
+	}
+	
+	public void setUploadTime(Date uploadTime) {
+		this.uploadTime = uploadTime;
+	}
+
 	public int getEmployeeId() {
 		return employeeId;
 	}
