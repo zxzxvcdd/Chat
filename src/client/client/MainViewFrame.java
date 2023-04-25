@@ -124,6 +124,8 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		joinButten.setFont(new Font("굴림", Font.PLAIN, 18));
 		joinButten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				
 			}
 		});
 		joinButten.setBounds(466, 424, 171, 44);
@@ -146,7 +148,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 		// 방검색버튼
 		JButton chatSearchButton = new JButton("");
-//		chatSearchButton.setIcon(new ImageIcon(MainViewFrame.class.getResource("/icon/search.png")));
+		chatSearchButton.setIcon(new ImageIcon(MainViewFrame.class.getResource("/client/icon/search.png")));
 		chatSearchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -167,7 +169,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-//		empSearchButton.setIcon(new ImageIcon(MainViewFrame.class.getResource("/icon/search.png")));
+		empSearchButton.setIcon(new ImageIcon(MainViewFrame.class.getResource("/client/icon/search.png")));
 		empSearchButton.setBounds(597, 27, 40, 40);
 		contentPane.add(empSearchButton);
 

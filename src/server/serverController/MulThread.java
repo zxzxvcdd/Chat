@@ -53,7 +53,7 @@ public class MulThread extends Thread {
 //					e.printStackTrace();
 				}
 
-				String command = (String) reqMap.get("command");
+				String command = (String)reqMap.get("command");
 
 				System.out.println("req  : " + command);
 
@@ -260,6 +260,7 @@ public class MulThread extends Thread {
 					resMap.put("command", "downContent");
 					resMap.put("content", dcontent);
 					break;
+					
 					
 				case "saveFile":
 					String fileName = (String) reqMap.get("fileName");

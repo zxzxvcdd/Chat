@@ -6,18 +6,27 @@ public class ChatUserDTO {
 	private int userId;
 	private int employeeId;
 	private int chatId;
+	private String name;
+	
 	
 	public ChatUserDTO() {
 		// TODO Auto-generated constructor stub
 	}
 	
+
 	
-	public ChatUserDTO(int userId, int employeeId, int chatId) {
+
+
+
+	public ChatUserDTO(int userId, int employeeId, int chatId, String name) {
 		super();
 		this.userId = userId;
 		this.employeeId = employeeId;
 		this.chatId = chatId;
+		this.name = name;
 	}
+
+
 
 
 	public int getUserId() {
@@ -40,9 +49,23 @@ public class ChatUserDTO {
 	}
 
 
+
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
 	@Override
 	public String toString() {
-		return "ChatUserDTO [userId=" + userId + ", employeeId=" + employeeId + ", chatId=" + chatId + "]";
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
 	
 	
@@ -50,3 +73,4 @@ public class ChatUserDTO {
 	
 	
 }
+

@@ -44,9 +44,9 @@ public class ChatClient {
 //			
 //			new EmployeeSearch(oos, emp);
 //			
-//			new Login(oos);
+			new Login(oos);
 			
-			new FileDownGui(oos, 1);
+//			new FileDownGui(oos, 1);
 			
 			
 			

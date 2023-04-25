@@ -105,12 +105,10 @@ public class FileDownGui extends JFrame implements Runnable {
 	      oos.writeObject(reqMap);
 	      oos.flush();
 			
-	    // fileList를 보여줌
+	    // fileList를 보여줌 - 전역변수로
 //	      Choice choice = new Choice();
 //
-//	      for(int i=0; i<=files.size(); i++) {	
-//	    	  choice.add(files.get(i).getFileName());
-//	      }
+
 //	      choice.setBounds(50, 110, 500, 40);
 //	      contentPane.add(choice);
 	      
@@ -198,6 +196,10 @@ public class FileDownGui extends JFrame implements Runnable {
 						System.out.println("Frame after Find 호출");
 						files = new ArrayList<FileDTO>();
 						files = (List<FileDTO>)resMap.get("fileList");
+//					      for(int i=0; i<=files.size(); i++) {	
+//				    	  choice.add(files.get(i).getFileName());
+//				      }
+						
 						if(files != null) System.out.println("ok");
 						else System.out.println("no");
 						call=false;
