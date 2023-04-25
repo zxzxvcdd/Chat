@@ -46,7 +46,6 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 	int empId;
 	List<ChatInfo> myChatList;
 	private JList sawonList;
-	JList jListChat;
 
 	/**
 	 * Create the frame.
@@ -97,12 +96,6 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		deparLabel.setFont(new Font("굴림", Font.PLAIN, 22));
 		deparLabel.setBounds(38, 27, 73, 40);
 		contentPane.add(deparLabel);
-
-		// 조직도목록
-		JList deperEmpList = new JList();
-		deperEmpList.setToolTipText("");
-		deperEmpList.setBounds(36, 95, 389, 175);
-		contentPane.add(deperEmpList);
 
 //		//채팅방 Label
 //		JLabel chatListLabel = new JLabel("\uCC44\uD305\uBC29 \uBAA9\uB85D");
@@ -207,13 +200,6 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		js2.setBounds(36, 340, 389, 29);
 		getContentPane().add(js2);
 
-		jListChat = new JList();
-		jListChat.setToolTipText("");
-		jListChat.setBounds(36, 360, 389, 175);
-		contentPane.add(jListChat);
-		jListChat.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		jListChat.addListSelectionListener(this);
-
 		
 		setVisible(true);
 
@@ -304,7 +290,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 					}
 
-				}
+				}System.out.printf("");
 			}
 
 		} catch (Exception e) {
