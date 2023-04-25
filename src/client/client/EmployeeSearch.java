@@ -168,7 +168,8 @@ public class EmployeeSearch extends JFrame implements Runnable, ActionListener {
 
 					}
 
-				}else {System.out.println(call);};
+				}else System.out.print("");
+
 			}
 
 		} catch (Exception e) {

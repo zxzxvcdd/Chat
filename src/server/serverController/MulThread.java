@@ -1,20 +1,14 @@
 package server.serverController;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import server.serverDTO.ChatInfo;
-import server.serverDTO.ChatListDTO;
-import server.serverDTO.ChatUserDTO;
 import server.serverDTO.EmpDTO;
 import server.serverService.ChatService;
 
@@ -26,6 +20,7 @@ public class MulThread extends Thread {
 	ObjectOutputStream oos;
 	List<ChatInfo> roomList;
 	EmpDTO emp;
+	List<EmpDTO> empList = null;
 
 	public MulThread(Socket s1) {
 		try {
@@ -118,8 +113,27 @@ public class MulThread extends Thread {
 
 				case "main":
 
-					resMap.put("command", "empList");
-//				resMap.put("empList",empList);
+					String type = (String)reqMap.get("type");
+			
+					Map<String,Object> checkMap = new HashMap<String,Object>();
+					
+					checkMap.put("type", type);
+					checkMap.put("value", reqMap.get("empId"));
+					
+					
+					System.out.println(checkMap);
+					
+					
+					roomList = service.findChat(checkMap);
+					
+					empList = service.findAllEmployees();
+					
+
+					
+					resMap.put("command", "afterMain");
+					resMap.put("roomList", roomList);
+					resMap.put("empList", empList);
+
 
 					break;
 
@@ -181,7 +195,7 @@ public class MulThread extends Thread {
 				case "selectByName":
 					
 					String name =(String)reqMap.get("name");
-					List<EmpDTO> empList = service.selectEmpByName(name);
+					empList = service.selectEmpByName(name);
 				
 					resMap.put("command", "afterSelectByName");
 					resMap.put("empList",empList);
@@ -259,81 +273,81 @@ public class MulThread extends Thread {
 	}
 
 
-	public void sendChat(String chat, int chatId) throws IOException {
+//	public void sendChat(String chat, int chatId) throws IOException {
+//
+//		HashMap<Object, Object> resMap = new HashMap<Object, Object>();
+//
+//		String resCommand = "sendchat";
+//
+//		resMap.put("command", resCommand);
+//		resMap.put("chatString", chat);
+//		resMap.put("chatId", chatId);
+//		oos.writeObject(resMap);
+//		oos.flush();
+//
+//	}
 
-		HashMap<Object, Object> resMap = new HashMap<Object, Object>();
-
-		String resCommand = "sendchat";
-
-		resMap.put("command", resCommand);
-		resMap.put("chatString", chat);
-		resMap.put("chatId", chatId);
-		oos.writeObject(resMap);
-		oos.flush();
-
-	}
-
-	public void updateRoom() throws IOException {
-
-		HashMap<Object, Object> resMap = new HashMap<Object, Object>();
-
-		String resCommand = "updateRoom";
-
-		resMap.put("command", resCommand);
-		resMap.put("roomList", roomList);
-		oos.writeObject(resMap);
-		oos.flush();
-
-	}
+//	public void updateRoom() throws IOException {
+//
+//		HashMap<Object, Object> resMap = new HashMap<Object, Object>();
+//
+//		String resCommand = "updateRoom";
+//
+//		resMap.put("command", resCommand);
+//		resMap.put("roomList", roomList);
+//		oos.writeObject(resMap);
+//		oos.flush();
+//
+//	}
 
 
-	
-	public List<MulThread> findChatThread(ChatInfo room, boolean update) throws IOException {
-
-		List<MulThread> roomThreads = new ArrayList<MulThread>();
-		
-		Set<Integer> userIdList = new HashSet<Integer>();
-		ChatUserDTO[] userList = room.getChatUserDTO();
-		ChatListDTO chatRoom = room.getChatListDTO();
-		int chatId = room.getChatListDTO().getChatId();
-		for(ChatUserDTO user : room.getChatUserDTO()) {
-
-			
-			userIdList.add(user.getUserId());
-		
-		}
-		
-		for (MulThread mulThread :  ServerController.threadList) {
-			
-			
-			if(userIdList.contains(mulThread.getEmp().getEmployeeId()))
-			{
-				//update 값 true일 시 room의 유저리스트 업데이트
-				if(update) {
-					
-					for(ChatInfo target : mulThread.getRoomList()) {
-						
-						if(target.getChatListDTO().getChatId()==chatId ) {
-							target.setChatListDTO(chatRoom);
-							target.setChatUserDTO(userList);
-							break;
-							
-						}
-						
-					}
-					
-				}
-				
-				roomThreads.add(mulThread);
-				
-				
-			}
-
-		}
-		
-		return roomThreads;
-
-	}
+//	
+//	public List<MulThread> findChatThread(ChatInfo room, boolean update) throws IOException {
+//
+//		List<MulThread> roomThreads = new ArrayList<MulThread>();
+//		
+//		Set<Integer> userIdList = new HashSet<Integer>();
+//		List<ChatUserDTO> userList = room.getChatUserDTO();
+//		ChatListDTO chatRoom = room.getChatListDTO();
+//		int chatId = room.getChatListDTO().getChatId();
+//		for(ChatUserDTO user : room.getChatUserDTO()) {
+//
+//			
+//			userIdList.add(user.getUserId());
+//		
+//		}
+//		
+//		for (MulThread mulThread :  ServerController.threadList) {
+//			
+//			
+//			if(userIdList.contains(mulThread.getEmp().getEmployeeId()))
+//			{
+//				//update 값 true일 시 room의 유저리스트 업데이트
+//				if(update) {
+//					
+//					for(ChatInfo target : mulThread.getRoomList()) {
+//						
+//						if(target.getChatListDTO().getChatId()==chatId ) {
+//							target.setChatListDTO(chatRoom);
+//							target.setChatUserDTO(userList);
+//							break;
+//							
+//						}
+//						
+//					}
+//					
+//				}
+//				
+//				roomThreads.add(mulThread);
+//				
+//				
+//			}
+//
+//		}
+//		
+//		return roomThreads;
+//
+//	}
 
 
 }

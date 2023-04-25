@@ -17,11 +17,15 @@ import javax.swing.border.EmptyBorder;
 
 import server.serverDTO.EmpDTO;
 
+
+
 public class Login extends JFrame implements Runnable {
 
 	private JPanel contentPane;
 	private JTextField id_textField;
 	private JTextField pw_textField;
+	
+	EmpDTO emp = new EmpDTO();
 
 	ObjectOutputStream oos;
 
@@ -110,7 +114,7 @@ public class Login extends JFrame implements Runnable {
 
 				reqMap.put("command", command);
 
-				EmpDTO emp = new EmpDTO();
+				
 				emp.setEmployeeId(id);
 				emp.setPw(pw);
 
@@ -201,23 +205,29 @@ public class Login extends JFrame implements Runnable {
 
 					System.out.println(result);
 					if (result) { // cm = ClientMain
-						JOptionPane.showMessageDialog(null, "ë¡œê·¸?¸ ?˜?—ˆ?Šµ?‹ˆ?‹¤!");
+						JOptionPane.showMessageDialog(null, "·Î±×ÀÎ¼º°ø");
+						
+						dispose();
+						setVisible(false);
+						
+						new MainViewFrame(oos,emp.getEmployeeId()).setVisible(true);
+						
 						// ë¡œê·¸?¸ ?˜ë©? ê·? ?‹¤?Œ ë©”ì¸?šŒë©´ìœ¼ë¡? ?—°ê²?
 					} else {
-						JOptionPane.showMessageDialog(null, "?•„?´?”” ?˜?Š” ë¹„ë?ë²ˆí˜¸ê°? ??? ¸?Šµ?‹ˆ?‹¤", "Message",
+						JOptionPane.showMessageDialog(null, "·Î±×ÀÎ ½ÇÆĞ", "Message",
 								JOptionPane.ERROR_MESSAGE);
 
 					}
 
 					call = false;
 
-				} else
-					System.out.println(call);
+				}else System.out.print("");
 
 			}
 
 		} catch (Exception e) {
 
+			e.printStackTrace();
 		}
 
 	}

@@ -126,21 +126,29 @@ public class ServerDAOImpl implements ServerDAO {
 	public List<EmpDTO> findAllEmployees() {
 		// TODO Auto-generated method stub
 		String sql = "select e.*, d.department_name" + " from employees e, departments d"
-				+ " where e.department_name = d.department_name";
+				+ " where e.department_id = d.department_id";
 
 		try {
-			pst = con.prepareStatement(sql);
+			pst = new LoggableStatement(con, sql);
+
+//
+//			System.out.println("\t sQuery ? " +
+//                    ((LoggableStatement)pst).getQueryString() + "\n");
+//
+//			
 			rs = pst.executeQuery();
 
 			List<EmpDTO> empList = new ArrayList<EmpDTO>();
 
+			
+			
 			while (rs.next()) {
 
 				EmpDTO emp = new EmpDTO(rs.getInt("employee_id"), rs.getString("pw"), rs.getString("name"),
 						rs.getInt("department_id"), rs.getString("tel"), rs.getString("admin"),
 						rs.getString("job_title"));
 
-				emp.setDepartmentName(rs.getString("departmentName"));
+				emp.setDepartmentName(rs.getString("department_name"));
 				empList.add(emp);
 
 			}
@@ -509,17 +517,27 @@ public class ServerDAOImpl implements ServerDAO {
 	public List<ChatUserDTO> findChatUser(Map<String, Object> checkMap) {
 		// TODO Auto-generated method stub
 
-		String sql = "select * from chat_users where ? = ?";
 
 		try {
-			pst = con.prepareStatement(sql);
-
+//			pst = con.prepareStatement(sql);
+			
 			String type = (String) checkMap.get("type");
 			int value = (Integer) checkMap.get("value");
+			String sql = "select * from chat_users where "+type+"= ?";
+			pst = new LoggableStatement(con, sql);
 
-			pst.setString(1, type);
-			pst.setInt(2, value);
 
+			pst.setInt(1, value);
+			
+			
+
+			 
+
+//			System.out.println("\t sQuery ? " +
+//			                                    ((LoggableStatement)pst).getQueryString() + "\n");
+
+			 
+			
 			rs = pst.executeQuery();
 
 			List<ChatUserDTO> userList = null;

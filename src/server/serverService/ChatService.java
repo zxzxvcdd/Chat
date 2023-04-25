@@ -1,9 +1,14 @@
 package server.serverService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import server.serverDAO.ServerDAOImpl;
-import server.serverDBConn.ServerDBConn;
+import server.serverDTO.ChatInfo;
+import server.serverDTO.ChatListDTO;
+import server.serverDTO.ChatUserDTO;
 import server.serverDTO.EmpDTO;
 
 public class ChatService {
@@ -74,6 +79,50 @@ public class ChatService {
 		return empList;
 		
 	}
+	
+	
+
+	public List<ChatInfo> findChat(Map<String, Object> checkMap) {
+
+		List<ChatUserDTO> userList = null; // 
+
+		List<ChatInfo> roomList = new ArrayList<ChatInfo>();
+
+		
+		userList = dao.findChatUser(checkMap);
+
+		System.out.println(userList);
+		if (userList != null) {
+			for (ChatUserDTO user : userList) {
+
+				int chatId = user.getChatId();
+				Map<String, Object> checkMap2 = new HashMap<String,Object>();
+				ChatListDTO chat = dao.findChat(chatId);
+
+				String type = "chat_id";
+
+				checkMap2.put("type", type);
+				checkMap2.put("value", chatId);
+
+				List<ChatUserDTO> userList2 = dao.findChatUser(checkMap2); 
+
+				ChatInfo chatInfo = new ChatInfo(chat, userList2);
+
+				roomList.add(chatInfo);
+
+			}
+		}
+
+		return roomList;
+
+	}
+
+	public List<EmpDTO> findAllEmployees() {
+
+		return dao.findAllEmployees();
+
+	}
+
 
 	
 	

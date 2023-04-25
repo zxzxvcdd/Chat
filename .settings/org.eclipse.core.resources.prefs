@@ -1,3 +1,5 @@
 eclipse.preferences.version=1
 encoding//src/client/client/EmployeeJoin.java=UTF-8
 encoding//src/client/client/EmployeeSearch.java=UTF-8
+encoding//src/server/serverDTO/ChatInfo.java=UTF-8
+encoding//src/server/serverService/ChatService.java=UTF-8

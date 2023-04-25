@@ -288,7 +288,7 @@
 							call = false;
 	
 						}
-					}else System.out.println(call);
+					}else System.out.print("");
 	
 				}
 	

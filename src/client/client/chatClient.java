@@ -25,7 +25,7 @@ public class ChatClient {
 			
 			
 			
-			s1 = new Socket("127.0.0.1", 1112);
+			s1 = new Socket("127.0.0.1", 1115);
 			System.out.println(s1.getInetAddress().getHostAddress() + " ¿¬°áµÊ");
 
 			

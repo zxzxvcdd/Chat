@@ -39,19 +39,22 @@ public class RcvThread extends Thread {
 					case "afterJoin":
 						EmployeeJoin.resMap = resMap;
 						EmployeeJoin.call = true;
-						
-						System.out.println("Call º¯°æ" + EmployeeJoin.call);
-						
 
 						break;
 
 					case "afterLogin":
 						Login.resMap = resMap;
-						System.out.println("afterLogin");
 						Login.call = true;
 
 						
 
+						break;
+						
+					case "afterMain":
+						
+						MainViewFrame.call = true;
+						MainViewFrame.resMap =resMap;
+						
 						break;
 //
 //				case "afterUpdate":
@@ -109,6 +112,7 @@ public class RcvThread extends Thread {
 
 		} catch (Exception e) {
 			
+			e.printStackTrace();
 			System.out.println("rcvThread Error");
 
 		}
