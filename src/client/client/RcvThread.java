@@ -29,6 +29,8 @@ public class RcvThread extends Thread {
 				
 				String command = (String) resMap.get("command");
 
+				System.out.println("coammand : "+command);
+				
 				switch (command) {
 
 				case "afterJoin":
@@ -61,6 +63,19 @@ public class RcvThread extends Thread {
 					tk1.beep();
 					break;
 					
+					
+					
+				case "afterSelectByName":
+					EmployeeSearch.searchCall = true;
+					
+					System.out.println(EmployeeSearch.searchCall);
+
+					EmployeeSearch.resMap = resMap;
+					
+					
+					
+					break;
+				
 					
 					
 

@@ -117,7 +117,7 @@ public class ClientTestFrame extends JFrame implements Runnable, ActionListener 
 	public void run() {
 		// TODO Auto-generated method stub
 
-		System.out.println("testFrame Thread run");
+//		System.out.println("testFrame Thread run");
 
 		try {
 

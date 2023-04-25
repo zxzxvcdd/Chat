@@ -18,6 +18,8 @@ public interface ServerDAO {
 	
 	public List<EmpDTO> findAllEmployees();
 	
+	public List<EmpDTO> findEmployees(String name);
+	
 	public EmpDTO findOneEmployees(int empId);
 	
 	public boolean modifyEmployees(EmpDTO emp);

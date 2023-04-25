@@ -46,7 +46,6 @@ public class MulThread extends Thread {
 		try {
 			while (socket.isConnected()) {
 
-				System.out.println(socket.getInetAddress()+" thread running");
 
 				HashMap<Object, Object> reqMap = null;
 				HashMap<Object, Object> resMap = new HashMap<Object, Object>();
@@ -153,6 +152,19 @@ public class MulThread extends Thread {
 					
 
 					break;
+					
+				case "selectByName":
+					
+					String name =(String)reqMap.get("name");
+					List<EmpDTO> empList = service.selectEmpByName(name);
+				
+					resMap.put("command", "afterSelectByName");
+					resMap.put("empList",empList);
+					
+					System.out.println(empList);
+			
+					break;
+					
 
 				case "send":
 
@@ -192,8 +204,8 @@ public class MulThread extends Thread {
 
 				}
 
-//			oos.writeObject(reqMap);
-//			oos.flush();
+			oos.writeObject(resMap);
+			oos.flush();
 
 			}
 		} catch (IOException e) {

@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
+
+import client.clientDTO.EmpDTO;
 
 public class ChatClient {
 	
@@ -24,7 +25,7 @@ public class ChatClient {
 			
 			
 			
-			s1 = new Socket("127.0.0.1", 4456);
+			s1 = new Socket("127.0.0.1", 1116);
 			System.out.println(s1.getInetAddress().getHostAddress() + " ¿¬°áµÊ");
 
 			
@@ -37,7 +38,12 @@ public class ChatClient {
 			
 			rcv.start();
 			
-			new ClientTestFrame(oos);
+//			new ClientTestFrame(oos);
+			
+			EmpDTO emp = new EmpDTO();
+			
+			new EmployeeSearch(oos, emp);
+			
 			
 			
 			

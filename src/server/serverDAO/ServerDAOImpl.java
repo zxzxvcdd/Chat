@@ -296,6 +296,50 @@ public class ServerDAOImpl implements ServerDAO {
 
 	}
 	
+	@Override
+	public List<EmpDTO> findEmployees(String name){
+		
+		String sql = "select * from employees" + " where name = ?";
+
+		try {
+			
+			pst = con.prepareStatement(sql);
+			
+			pst.setString(1, name);
+			
+			rs = pst.executeQuery();
+
+			List<EmpDTO> empList = new ArrayList<EmpDTO>();
+
+			while (rs.next()) {
+
+				EmpDTO emp = new EmpDTO(rs.getInt("employee_id"), rs.getString("pw"), rs.getString("name"),
+						rs.getInt("department_id"), rs.getString("tel"), rs.getString("admin"),
+						rs.getString("job_title"));
+
+				
+				empList.add(emp);
+
+			}
+			
+			return empList;
+			
+			
+			
+		}catch (SQLException e) {
+			e.printStackTrace();
+
+			System.out.println("findEmployees error");
+
+			return null;
+
+		}
+		
+		
+		
+	}
+	
+	
 	public ChatListDTO find1v1Chat(int chatId1, int chatId2) {
 		// TODO Auto-generated method stub
 
