@@ -24,31 +24,55 @@ public class RcvThread extends Thread {
 
 			while (true) {
 
-				resMap = (HashMap<Object, Object>) ois.readObject();
-
 				
-				String command = (String) resMap.get("command");
+					resMap = (HashMap<Object, Object>) ois.readObject();
+					
+					System.out.println("resMap : " + resMap);
+					
+					if (resMap != null) {
+					String command = (String) resMap.get("command");
 
-				System.out.println("coammand : "+command);
-				
-				switch (command) {
+					System.out.println("coammand : " + command);
 
-				case "afterJoin":
-				case "afterLogin":
-					System.out.println(command);
-					ClientTestFrame.call = true;
-					System.out.println(ClientTestFrame.call);
-					ClientTestFrame.resMap = resMap;
-					
-					break;
-					
-					
-				case "chat":
-					Toolkit tk1=Toolkit.getDefaultToolkit(); //비프음
-					
-					
-					int chatId = (Integer)resMap.get("ChatId");
-					
+					switch (command) {
+
+					case "afterJoin":
+						EmployeeJoin.resMap = resMap;
+						EmployeeJoin.call = true;
+						
+						System.out.println("Call 변경" + EmployeeJoin.call);
+						
+
+						break;
+
+					case "afterLogin":
+						Login.resMap = resMap;
+						System.out.println("afterLogin");
+						Login.call = true;
+
+						
+
+						break;
+//
+//				case "afterUpdate":
+//						
+//					Employee_Update.call = true;
+//					Employee_Update.resMap = resMap;
+//					
+//					break;
+//					
+//				case "afterAccreditation":
+//					
+//					Accreditation.call = true;
+//					Accreditation.resMap = resMap;
+//					break;
+//					
+
+					case "chat":
+						Toolkit tk1 = Toolkit.getDefaultToolkit(); // 비프음
+
+						int chatId = (Integer) resMap.get("ChatId");
+
 //					for(ChatRoomFrame Room : ChatClient.chatList) {
 //						
 //						if(room.getChatId == chatId) {
@@ -60,37 +84,32 @@ public class RcvThread extends Thread {
 //						}
 //						
 //					}
-					tk1.beep();
-					break;
-					
-					
-					
-				case "afterSelectByName":
-					EmployeeSearch.searchCall = true;
-					
-					System.out.println(EmployeeSearch.searchCall);
+						tk1.beep();
+						break;
 
-					EmployeeSearch.resMap = resMap;
-					
-					
-					
-					break;
-				
-					
-					
+					case "afterSelectByName":
+						
+						EmployeeSearch.resMap = resMap;
+						System.out.println("search : "+EmployeeSearch.resMap);
+						EmployeeSearch.call = true;
+						System.out.println(EmployeeSearch.call);
 
-				
-					
+						
 
-				default:
+						break;
 
-					break;
+					default:
+
+						break;
+
+					}
 
 				}
-
 			}
 
 		} catch (Exception e) {
+			
+			System.out.println("rcvThread Error");
 
 		}
 

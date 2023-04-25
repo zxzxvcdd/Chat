@@ -11,7 +11,7 @@ import server.serverDTO.FileDTO;
 
 public interface ServerDAO {
 	
-	
+	public boolean accreditation(int id);
 	public boolean joinEmployees(EmpDTO emp);
 	
 	public boolean login(int id, String pw);

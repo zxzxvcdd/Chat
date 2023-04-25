@@ -25,7 +25,7 @@ public class ChatClient {
 			
 			
 			
-			s1 = new Socket("127.0.0.1", 1116);
+			s1 = new Socket("127.0.0.1", 1112);
 			System.out.println(s1.getInetAddress().getHostAddress() + " ¿¬°áµÊ");
 
 			
@@ -40,9 +40,11 @@ public class ChatClient {
 			
 //			new ClientTestFrame(oos);
 			
-			EmpDTO emp = new EmpDTO();
-			
-			new EmployeeSearch(oos, emp);
+//			EmpDTO emp = new EmpDTO();
+//			
+//			new EmployeeSearch(oos, emp);
+//			
+			new Login(oos);
 			
 			
 			

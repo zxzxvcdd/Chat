@@ -20,7 +20,7 @@ import server.serverService.ChatService;
 
 public class MulThread extends Thread {
 
-	ChatService service = new ChatService();
+	ChatService service = ChatService.getInstance();
 	Socket socket;
 	ObjectInputStream ois;
 	ObjectOutputStream oos;
@@ -65,31 +65,56 @@ public class MulThread extends Thread {
 				switch (command) {
 
 				case "join":
-
-					System.out.println("크기" + reqMap.size());
-					System.out.println((String) reqMap.get("name"));
-
-					String input = (String) reqMap.get("name");
-
-					resMap.put("command", "afterJoin");
-					resMap.put("afterJoin", input);
-
-					oos.writeObject(resMap);
-					oos.flush();
-
-//				(EmpDTO)reqMap.get("EmpDTO");
-
-//				resMap.put("command",);
-
+					
+					emp = (EmpDTO)reqMap.get("emp");
+					
+					System.out.println(emp);
+					boolean joinResult = service.joinEmployee(emp);
+					
+					System.out.println(joinResult);
+					
+					  if(joinResult){
+						  resMap.put("command", "afterJoin");
+						  resMap.put("joinResult",joinResult); 
+						  System.out.println("성공");
+						  
+					  }
+					  else{
+						  resMap.put("command", "afterJoin");
+						  resMap.put("joinResult",joinResult); 
+						  System.out.println("실패");
+					  }
+					
+					
+					
 					break;
-
+					
 				case "login":
-
-//				(EmpDTO)reqMap.get("EmpDTO");
-
-//				resMap.put("command",);
-
+					
+				
+					
+					System.out.println(reqMap.containsKey("emp"));
+					emp = (EmpDTO)reqMap.get("emp");
+					System.out.println(emp);
+					boolean Loginresult = service.loginEmployee(emp.getEmployeeId(),emp.getPw());
+					System.out.println(Loginresult);
+					
+					
+					
+					if(Loginresult) {
+						resMap.put("command", "afterLogin");
+						 resMap.put("loginResult",Loginresult);
+						 
+						
+					}else {
+						resMap.put("command", "afterLogin");
+						 resMap.put("loginResult",Loginresult);
+						 
+					}
+					
 					break;
+
+
 
 				case "main":
 

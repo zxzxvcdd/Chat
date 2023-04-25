@@ -17,11 +17,13 @@ import server.serverDTO.FileDTO;
 
 public class ServerDAOImpl implements ServerDAO {
 
+	
+	private static ServerDAOImpl instance = new ServerDAOImpl();
 	private Connection con;
 	private PreparedStatement pst;
 	private ResultSet rs;
 
-	public ServerDAOImpl() {
+	private ServerDAOImpl() {
 
 		try {
 			con = new ServerDBConn().getCon();
@@ -31,82 +33,93 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 
 	}
+	
+    public static ServerDAOImpl getInstance() {
+        return instance;
+    }
 
 	@Override
 	public boolean joinEmployees(EmpDTO emp) {
 
-		String sql = "insert into employees(employee_id, pw, name, department_id, tel, admin, job_title)"
-				+ " values(?, ?, ?, ?, ? , ?, ?)";
+		String sql = "insert into employees(employee_id, pw, name, department_id, tel, job_title)"
+				+ " values(?, ?, ?, ?, ?, ?)";
 
-		try {
 
-			pst = con.prepareStatement(sql);
+		if (emp != null) {
+			try {
 
-			pst.setInt(1, emp.getEmployeeId());
-			pst.setString(2, emp.getPw());
-			pst.setString(3, emp.getName());
-			pst.setInt(4, emp.getDepartmentId());
-			pst.setString(5, emp.getTel());
-			pst.setString(6, emp.getAdmin());
-			pst.setString(7, emp.getJobTitle());
+			
+				
+				pst = con.prepareStatement(sql);
+				pst.setQueryTimeout(3);
+				
+				pst.setInt(1, emp.getEmployeeId());
+				pst.setString(2, emp.getPw());
+				pst.setString(3, emp.getName());
+				pst.setInt(4, emp.getDepartmentId());
+				pst.setString(5, emp.getTel());
+				pst.setString(6, emp.getJobTitle());
 
-			int result = pst.executeUpdate();
+				int result = pst.executeUpdate();
+				System.out.println("dao result : " + result);
 
-			if (result >= 1) {
-				return true;
-			} else {
+				if (result >= 1) {
+					return true;
+				} else {
+					return false;
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+
+				System.out.println("joinEmployees error");
 				return false;
 			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-			System.out.println("joinEmployees error");
-			return false;
 		}
+		
+		return false;
 
 	}
-	
+
 	@Override
-	public boolean login(int id, String pw) {		//로그인
-		 
+	public boolean login(int id, String pw) { // 로그인
+
 		String sql = "select employee_id, pw from employees where employee_id = ? and pw = ?";
 		int Id;
 		String Pw;
 		boolean a = true;
-		
+
 		try {
 			pst = con.prepareStatement(sql);
-			
+
 			pst.setInt(1, id);
 			pst.setString(2, pw);
-			
+
 			rs = pst.executeQuery();
-			
+
 			rs.next();
-				Id = rs.getInt("employee_id");
-				Pw = rs.getString("pw");
-				
-				if((Id == id) && Pw.equals(pw)) {
-					a= true;
-				}else {
-					a= false;
-				}
-			
-			
-			if(a) {
+			Id = rs.getInt("employee_id");
+			Pw = rs.getString("pw");
+
+			if ((Id == id) && Pw.equals(pw)) {
+				a = true;
+			} else {
+				a = false;
+			}
+
+			if (a) {
 				return true;
-			}else {
+			} else {
 				return false;
 			}
+			
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		
-		
-		
+
 	}
 
 	@Override
@@ -280,7 +293,7 @@ public class ServerDAOImpl implements ServerDAO {
 			rs = pst.executeQuery();
 
 			rs.next();
-			
+
 			int result = rs.getInt(1);
 
 			return result;
@@ -295,18 +308,18 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 
 	}
-	
+
 	@Override
-	public List<EmpDTO> findEmployees(String name){
-		
+	public List<EmpDTO> findEmployees(String name) {
+
 		String sql = "select * from employees" + " where name = ?";
 
 		try {
-			
+
 			pst = con.prepareStatement(sql);
-			
+
 			pst.setString(1, name);
-			
+
 			rs = pst.executeQuery();
 
 			List<EmpDTO> empList = new ArrayList<EmpDTO>();
@@ -317,16 +330,13 @@ public class ServerDAOImpl implements ServerDAO {
 						rs.getInt("department_id"), rs.getString("tel"), rs.getString("admin"),
 						rs.getString("job_title"));
 
-				
 				empList.add(emp);
 
 			}
-			
+
 			return empList;
-			
-			
-			
-		}catch (SQLException e) {
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 
 			System.out.println("findEmployees error");
@@ -334,21 +344,51 @@ public class ServerDAOImpl implements ServerDAO {
 			return null;
 
 		}
-		
-		
-		
+
 	}
-	
-	
+
+	@Override
+	public boolean accreditation(int id) { // 본인인증
+
+		String sql = "select employee_id from employees where employee_id = ?";
+		int Id;
+		boolean a = true;
+
+		try {
+			pst = con.prepareStatement(sql);
+
+			pst.setInt(1, id);
+
+			rs = pst.executeQuery();
+
+			while (rs.next()) {
+				Id = rs.getInt("employee_id");
+
+				if ((Id == id)) {
+					a = true;
+				} else {
+					a = false;
+				}
+			}
+
+			if (a) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
 	public ChatListDTO find1v1Chat(int chatId1, int chatId2) {
 		// TODO Auto-generated method stub
 
-		String sql ="select * from chat_lists"
-				+ " where chat_id = "
+		String sql = "select * from chat_lists" + " where chat_id = "
 				+ " (select chat_id from chat_users a, (select * from chat_users where employee_id = ?) b "
-				+ " where a.employee_id =?"
-				+ " and and a.chat_id=b.chat_id)"
-				+ " and chat_id="
+				+ " where a.employee_id =?" + " and and a.chat_id=b.chat_id)" + " and chat_id="
 				+ " (select chat_id from chat_users group by chat_id having count(*) = 2;)";
 
 		try {
@@ -373,6 +413,7 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 
 	}
+
 	@Override
 	public ChatListDTO findChat(int chatId) {
 		// TODO Auto-generated method stub
@@ -413,7 +454,7 @@ public class ServerDAOImpl implements ServerDAO {
 
 			pst.setString(1, filePath);
 			pst.setInt(2, chatId);
-			
+
 			int result = pst.executeUpdate();
 
 			if (result >= 1) {
@@ -480,19 +521,16 @@ public class ServerDAOImpl implements ServerDAO {
 			pst.setInt(2, value);
 
 			rs = pst.executeQuery();
-			
+
 			List<ChatUserDTO> userList = null;
 			while (rs.next()) {
 
 				ChatUserDTO user = new ChatUserDTO(rs.getInt("user_i"), rs.getInt("employee_id"), rs.getInt("chat_id"));
 
-
-				
 				userList.add(user);
 
 			}
-			
-			
+
 			return userList;
 
 		} catch (SQLException e) {
@@ -508,45 +546,37 @@ public class ServerDAOImpl implements ServerDAO {
 
 	@Override
 	public boolean saveFile(FileDTO file) {
-	      // TODO Auto-generated method stub
-	      
-	      String sql = "insert into files(file_id, file_path, employee_id, chat_id, file_name)"
-	            +             " values(file_seq_NEXTVAL, ?, ?, ?, ?)";
-	         
-	      
-	      try {
-	         pst = con.prepareStatement(sql);
-	         
-	         pst.setString(1, file.getFilePath());
-	         pst.setInt(2, file.getEmployeeId());
-	         pst.setInt(3, file.getChatId());
-	         pst.setString(4, file.getFileName());
-	         
-	         
-	         
-	         int result = pst.executeUpdate();
-	         
-	          
-	         
-	         if(result>=1) {
-	            return true;
-	         }else {
-	            return false;
-	         }
-	         
-	         
-	         
-	      } catch (SQLException e) {
-	         e.printStackTrace();
-	         
-	         System.out.println("saveFile error");
-	         
-	         return false;
-	         
-	      }
-	   
-	      
-	   }
+		// TODO Auto-generated method stub
+
+		String sql = "insert into files(file_id, file_path, employee_id, chat_id, file_name)"
+				+ " values(file_seq_NEXTVAL, ?, ?, ?, ?)";
+
+		try {
+			pst = con.prepareStatement(sql);
+
+			pst.setString(1, file.getFilePath());
+			pst.setInt(2, file.getEmployeeId());
+			pst.setInt(3, file.getChatId());
+			pst.setString(4, file.getFileName());
+
+			int result = pst.executeUpdate();
+
+			if (result >= 1) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+			System.out.println("saveFile error");
+
+			return false;
+
+		}
+
+	}
 
 	@Override
 	public FileDTO findFile(FileDTO file) {

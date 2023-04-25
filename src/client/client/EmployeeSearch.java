@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+
 import client.clientDTO.EmpDTO;
 
 public class EmployeeSearch extends JFrame implements Runnable, ActionListener {
@@ -26,8 +27,8 @@ public class EmployeeSearch extends JFrame implements Runnable, ActionListener {
 	ObjectOutputStream oos;
 	JTextField textField;
 	HashMap<Object, Object> reqMap;
-	static HashMap<Object, Object> resMap = null;
-	static boolean searchCall = false;
+	public static HashMap<Object, Object> resMap = null;
+	public static boolean call = false;
 	EmpDTO myEmp;
 	private JTextField textName;
 	private JTextArea textArea;
@@ -135,9 +136,8 @@ public class EmployeeSearch extends JFrame implements Runnable, ActionListener {
 
 			while (true) {
 
-				System.out.println(searchCall);
 				
-				if (searchCall) {
+				if (call) {
 					
 					System.out.println("검색 입력 쓰레드 처리 시작");
 					String resCom = (String) resMap.get("command");
@@ -162,17 +162,19 @@ public class EmployeeSearch extends JFrame implements Runnable, ActionListener {
 
 						}
 						
-						searchCall=false;
+						call=false;
 
 						break;
 
 					}
 
-				}
+				}else {System.out.println(call);};
 			}
 
 		} catch (Exception e) {
 
+			e.printStackTrace();
+			System.out.println("search Tread error");
 		}
 
 	}
