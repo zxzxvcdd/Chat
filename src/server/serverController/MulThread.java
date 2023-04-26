@@ -45,6 +45,7 @@ public class MulThread extends Thread {
 	public void run() {
 
 		try {
+			
 			while (socket.isConnected()) {
 
 				HashMap<Object, Object> reqMap = null;

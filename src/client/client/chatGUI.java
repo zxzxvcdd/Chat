@@ -171,7 +171,7 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 				reqMap.put("room", room);
 				String sendChat = chatOutput.getText();
 				reqMap.put("chat", sendChat);
-
+ 
 				try {
 
 					oos.writeObject(reqMap);
