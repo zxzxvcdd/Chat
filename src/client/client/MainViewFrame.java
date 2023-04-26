@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
@@ -35,17 +37,28 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 	public static boolean call = false;
 	public static HashMap<Object, Object> resMap = null;
 
-	DefaultListModel chatListModel;
 
 	private JPanel contentPane;
 	private JTextField empSearchText;
 	private JTextField chatSearchText;
-	private JTable table1, table2;
 	ObjectOutputStream oos;
 	DefaultTableModel model1, model2;
 	int empId;
 	List<ChatInfo> myChatList;
 	private JList sawonList;
+	private JTextArea textArea;
+	private JTable empTable;
+	private JTable chatTable;
+	
+	private int tEmpId;
+	private int tChatId;
+	
+	private String[] empTabNames = {"Î∂ÄÏÑú", "ÏßÅÍ∏â", "Ïù¥Î¶Ñ", "Î≤àÌò∏","id"};
+	private DefaultTableModel empModel = new DefaultTableModel(empTabNames,0);
+	
+	private String[] chatTabNames = {"Ï±ÑÌåÖÎ∞© Ïù¥Î¶Ñ", "Ï±ÑÌåÖÎ∞© Ïù∏Ïõê","id"};
+	private DefaultTableModel chatModel = new DefaultTableModel(chatTabNames,0);
+	
 
 	/**
 	 * Create the frame.
@@ -80,30 +93,25 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		// ¡¢º”¡ﬂ¿Œ ªÁø¯ ∂Û∫ß
+
 		JLabel onlineSawon = new JLabel("   \uC811\uC18D\uC911\uC778 \uC0AC\uC6D0");
-		onlineSawon.setFont(new Font("±º∏≤", Font.PLAIN, 20));
+		onlineSawon.setFont(new Font("Êè¥ÎåÄ‚îù", Font.PLAIN, 20));
 		onlineSawon.setBounds(466, 77, 171, 40);
 		contentPane.add(onlineSawon);
 
-		// ¡¢º”¡ﬂ¿Œ ªÁø¯∏Ò∑œ
+
 		sawonList = new JList();
 		sawonList.setBounds(466, 120, 171, 150);
 		contentPane.add(sawonList);
 
-		// ¡∂¡˜µµ Label
+
 		JLabel deparLabel = new JLabel("\uC870\uC9C1\uB3C4");
-		deparLabel.setFont(new Font("±º∏≤", Font.PLAIN, 22));
+		deparLabel.setFont(new Font("Êè¥ÎåÄ‚îù", Font.PLAIN, 22));
 		deparLabel.setBounds(38, 27, 73, 40);
 		contentPane.add(deparLabel);
 
-//		//√§∆√πÊ Label
-//		JLabel chatListLabel = new JLabel("\uCC44\uD305\uBC29 \uBAA9\uB85D");
-//		chatListLabel.setFont(new Font("±º∏≤", Font.PLAIN, 22));
-//		chatListLabel.setBounds(38, 295, 134, 40);
-//		contentPane.add(chatListLabel);
 
-		// πÊ∏∏µÈ±‚
+		
 		JButton createButten = new JButton("\uBC29\uB9CC\uB4E4\uAE30");
 		createButten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -115,23 +123,21 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 			}
 		});
-		createButten.setFont(new Font("±º∏≤", Font.PLAIN, 18));
+		createButten.setFont(new Font("Êè¥ÎåÄ‚îù", Font.PLAIN, 18));
 		createButten.setBounds(466, 364, 171, 44);
 		contentPane.add(createButten);
 
-		// ¿‘¿Â«œ±‚
+
 		JButton joinButten = new JButton("\uC785\uC7A5\uD558\uAE30");
-		joinButten.setFont(new Font("±º∏≤", Font.PLAIN, 18));
+		joinButten.setFont(new Font("Êè¥ÎåÄ‚îù", Font.PLAIN, 18));
 		joinButten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				
 			}
 		});
 		joinButten.setBounds(466, 424, 171, 44);
 		contentPane.add(joinButten);
 
-		// ∑Œ±◊æ∆øÙ
+
 		JButton logoutButten = new JButton("\uB85C\uADF8\uC544\uC6C3");
 		logoutButten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -142,11 +148,11 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 			public void mouseClicked(MouseEvent e) {
 			}
 		});
-		logoutButten.setFont(new Font("±º∏≤", Font.PLAIN, 18));
+		logoutButten.setFont(new Font("Êè¥ÎåÄ‚îù", Font.PLAIN, 18));
 		logoutButten.setBounds(466, 483, 171, 44);
 		contentPane.add(logoutButten);
 
-		// πÊ∞Àªˆπˆ∆∞
+
 		JButton chatSearchButton = new JButton("");
 		chatSearchButton.setIcon(new ImageIcon(MainViewFrame.class.getResource("/client/icon/search.png")));
 		chatSearchButton.addActionListener(new ActionListener() {
@@ -156,52 +162,81 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		chatSearchButton.setBounds(597, 298, 40, 40);
 		contentPane.add(chatSearchButton);
 
-		// πÊ∞Àªˆ TEXT
+
 		chatSearchText = new JTextField();
 		chatSearchText.setText("\uBC29\uAC80\uC0C9");
 		chatSearchText.setColumns(10);
 		chatSearchText.setBounds(466, 298, 130, 40);
 		contentPane.add(chatSearchText);
 
-		// ªÁø¯∞Àªˆπˆ∆∞
+
 		JButton empSearchButton = new JButton("");
 		empSearchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				
+					// Add your search logic here
+					String name = empSearchText.getText();
+					try {
+
+
+						
+						reqMap.put("command", "selectByName");
+						reqMap.put("name", empSearchText.getText());
+						oos.writeObject(reqMap);
+
+						oos.flush();
+			}
+			 catch (Exception ex) {
+				ex.printStackTrace();
+			 }
 			}
 		});
 		empSearchButton.setIcon(new ImageIcon(MainViewFrame.class.getResource("/client/icon/search.png")));
 		empSearchButton.setBounds(597, 27, 40, 40);
 		contentPane.add(empSearchButton);
 
-		// ªÁø¯∞Àªˆ TEXT
+		
 		empSearchText = new JTextField();
 		empSearchText.setText("\uC0AC\uC6D0\uAC80\uC0C9");
 		empSearchText.setBounds(467, 27, 130, 40);
 		contentPane.add(empSearchText);
 		empSearchText.setColumns(10);
 
-		// ¡∂¡˜ ≈◊¿Ã∫Ì
-		String[] col1 = { "∫Œº≠", "¡˜±ﬁ", "¿Ã∏ß", "π¯»£" };
-		String[][] row1 = new String[0][3];
 
-		model1 = new DefaultTableModel(row1, col1);
-		table1 = new JTable(model1);
-		JScrollPane js1 = new JScrollPane(table1);
 
-		// πÊ∏Ò∑œ ≈◊¿Ã∫Ì
-		String[] col2 = { "√§∆√πÊ¿Ã∏ß", "¿Œø¯ºˆ" };
-		String[][] row2 = new String[0][2];
-
-		model2 = new DefaultTableModel(row2, col2);
-		table2 = new JTable(model2);
-		JScrollPane js2 = new JScrollPane(table2);
-
+		
+	
 		getContentPane().setLayout(null);
-		js1.setBounds(36, 71, 389, 29);
-		getContentPane().add(js1);
-		js2.setBounds(36, 340, 389, 29);
-		getContentPane().add(js2);
+		
+		empTable = new JTable(empModel);
+		empTable.setBounds(54, 93, 359, 21);
+		empTable.addMouseListener(new JTableMouseListener());
+		empTable.getColumn("id").setWidth(0);
+		empTable.getColumn("id").setMaxWidth(0);
+		empTable.getColumn("id").setMinWidth(0);
+		empTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		chatTable = new JTable(chatModel);
+		chatTable.setBounds(64, 339, 359, 21);
+		empTable.addMouseListener(new JTableMouseListener());		
+		chatTable.getColumn("id").setWidth(0);
+		chatTable.getColumn("id").setMaxWidth(0);
+		chatTable.getColumn("id").setMinWidth(0);
+		chatTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		
+		JScrollPane scrollPane = new JScrollPane(empTable);
+		scrollPane.setBounds(54, 120, 362, 172);
+		contentPane.add(scrollPane);
+		
 
+		
+		JScrollPane scrollPane_1 = new JScrollPane(chatTable);
+		scrollPane_1.setBounds(64, 381, 359, 146);
+		contentPane.add(scrollPane_1);
+
+	
 		
 		setVisible(true);
 
@@ -210,25 +245,58 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		Thread t1 = new Thread(this);
 		t1.start();
 
-		// ¿ßø°≤® ºˆ¡§?----------------------------------- ø¿∑˘∂ﬂ¥¬∞≈∞∞¥Ÿ.
-//      String[] col3 = { "√§∆√πÊ¿Ã∏ß" , "¿Œø¯ºˆ" };
-//      ListModel<String> model3 = new DefaultListModel<>();
-//      for(String s : col2){
-//          ((DefaultListModel<String>)model3).addElement(s);
-//      }
-//      
-//      jListChat = new JList<>(model3);
-//      jListChat.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//      jListChat.addListSelectionListener(this);
-//      jListChat.setPreferredSize(new Dimension(389, 175));
-//      jListChat.setLocation(38, 330);
-//
-
-//     
-		// -----------------------------------------------------------------
 
 		
 		
+	}
+	
+	private class JTableMouseListener implements MouseListener {
+
+
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		
+			JTable jtable = (JTable)e.getSource();
+			int row = jtable.getSelectedRow();
+		
+			if(e.getSource()==empTable) {
+				tEmpId = (int) empModel.getValueAt(row, 5);
+			
+			}else if(e.getSource()==chatTable) {
+				
+				tChatId = (int)chatModel.getValueAt(row, 3);
+				
+			}
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 
 	@Override
@@ -253,33 +321,37 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 					case "afterMain":
 
 						List<EmpDTO> empList = (List<EmpDTO>) resMap.get("empList");
-						List<ChatInfo> roomList = (ArrayList<ChatInfo>) resMap.get("roomList");
-						String printChatList = "";
-
-						String[][] row3 = new String[roomList.size()][2];
-						if (roomList != null) {
-							for (ChatInfo room : roomList) {
-
-								ChatListDTO chat = room.getChatListDTO();
-
-								String name = chat.getChatName(); // √§∆√πÊ ¿Ã∏ß
-								int i = room.getChatUserDTO().size(); // √§∆√πÊ ¿Œø¯ ºˆ
-								printChatList += name + "\t\t" + i + "∏Ì" + "\n";
-
-								// chatListModel.
-//							  
-//							  
-//							  String[] col3 = { name , i+"∏Ì"};
-//							  
-//							  
-//							  JTable table2 = new JTable(model2); JScrollPane js2 = new
-//							  JScrollPane(table2);
-
+						List<ChatInfo> roomList = (List<ChatInfo>) resMap.get("roomList");
+				
+						if (empList != null) {
+			
+							for(EmpDTO emp : empList) {
+								System.out.println("emp ÌÖåÏù¥Î∏î ÏÉùÏÑ±");
+								System.out.println(emp);
+								empModel.addRow(new Object[] {emp.getDepartmentName(),emp.getJobTitle(),emp.getName(),emp.getTel()});
+								
 							}
+							
 						}
+						
+						if(roomList != null) {
+							
+					
+							for(ChatInfo myChat : roomList) {
+								System.out.println("chat ÌÖåÏù¥Î∏î ÏÉùÏÑ±");
+								System.out.println(myChat);
+								chatModel.addRow(new Object[] {myChat.getChatListDTO().getChatName(),""+myChat.getChatUserDTO().size()});
+								
+							}
+							
+							
+							
+						}
+						
 
-						// chatList.setText(printChatList);
-						System.out.println(printChatList);
+						
+						
+						//System.out.println(printChatList);
 						if (empList != null) {
 							for (EmpDTO emp : empList) {
 
@@ -289,6 +361,31 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 						call = false;
 
 						break;
+						
+					case "afterSelectByName":
+
+						
+						String printEmpList = "";
+						List<EmpDTO> empList1 = (List<EmpDTO>) resMap.get("empList");
+						if (empList1.size() != 0) {
+
+							for (EmpDTO result : empList1) {
+
+								printEmpList += result + "\n";
+
+							}
+							textArea.setText(printEmpList);
+						} else {
+							textArea.setText("ÂØÉÔøΩÔøΩÍπãÂØÉÍ≥åÎÇµÂ™õÔøΩ ÔøΩÎææÔøΩÎíøÔøΩÎï≤ÔøΩÎñé.");
+
+						}
+						
+						call=false;
+
+						break;
+						
+					
+
 
 					}
 

@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/client/client/EmployeeJoin.java=UTF-8
 encoding//src/client/client/EmployeeSearch.java=UTF-8
+encoding//src/client/client/MainViewFrame.java=UTF-8
 encoding//src/client/client/RcvThread.java=UTF-8
 encoding//src/server/serverController/MulThread.java=UTF-8
 encoding//src/server/serverDAO/ServerDAOImpl.java=UTF-8

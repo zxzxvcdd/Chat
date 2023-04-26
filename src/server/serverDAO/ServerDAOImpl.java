@@ -173,6 +173,7 @@ public class ServerDAOImpl implements ServerDAO {
 
 		try {
 			pst = con.prepareStatement(sql);
+			pst.setInt(1, empId);
 			rs = pst.executeQuery();
 
 			rs.next();

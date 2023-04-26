@@ -222,13 +222,15 @@ public class MulThread extends Thread {
 					String newChat = emp.getName() + ":\t" + sendString + "\n";
 
 					boolean sendResult = service.writeChat(sendRoom, newChat);
+					
+					resMap.put("chatId", sendRoom.getChatListDTO().getChatId());
 
 					if (sendResult) {
 
 						String sendChat = service.readChat(sendRoom);
 
 						resMap.put("chat", sendChat);
-						resMap.put("chatId", sendRoom.getChatListDTO().getChatId());
+
 						List<MulThread> roomThreads = findChatThread(sendRoom, false);
 
 						for (MulThread roomThread : roomThreads) {
@@ -242,7 +244,7 @@ public class MulThread extends Thread {
 
 					resMap.put("command", "afterSendChat");
 					resMap.put("result", sendResult);
-
+			
 					break;
 
 				case "invite":
@@ -287,6 +289,8 @@ public class MulThread extends Thread {
 							}
 							resMap.put("command", "afterCreateRoom");
 							resMap.put("result","failUsers");
+							resMap.put("chatId", updateRoom.getChatListDTO().getChatId());
+							
 							
 
 						}
@@ -353,6 +357,8 @@ public class MulThread extends Thread {
 			String updateString = emp.getName() + " " + emp.getJobTitle() + "님이 " + newEmp.getName() + " "
 					+ newEmp.getJobTitle() + "님을 초대하였습니다.";
 
+			resMap.put("chatId", updateRoom.getChatListDTO().getChatId());
+
 			boolean updateResult = service.writeChat(updateRoom, updateString);
 
 			if (updateResult) {
@@ -360,7 +366,6 @@ public class MulThread extends Thread {
 				String sendChat = service.readChat(updateRoom);
 
 				resMap.put("chat", sendChat);
-				resMap.put("chatId", updateRoom.getChatListDTO().getChatId());
 
 				for (MulThread roomThread : roomThreads) {
 
@@ -369,7 +374,7 @@ public class MulThread extends Thread {
 				}
 
 				resMap.remove("chat");
-				resMap.remove("chatId");
+
 				resMap.put("inviteResult", 1);
 				// 전부 성공
 			} else {
@@ -386,19 +391,21 @@ public class MulThread extends Thread {
 
 		}
 
+		
 		resMap.put("command", "afterInvite");
 
 		return resMap;
 
 	}
 
-	public void updateRoom() throws IOException {
+	public void updateRoom(int chatId) throws IOException {
 
 		HashMap<Object, Object> resMap = new HashMap<Object, Object>();
 
 		String resCommand = "updateRoom";
 
 		resMap.put("command", resCommand);
+		resMap.put("chatId", chatId);
 		resMap.put("roomList", roomList);
 		oos.writeObject(resMap);
 		oos.flush();
@@ -437,7 +444,7 @@ public class MulThread extends Thread {
 
 					}
 
-					mulThread.updateRoom();
+					mulThread.updateRoom(chatId);
 
 				}
 

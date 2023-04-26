@@ -9,6 +9,8 @@ public class RcvThread extends Thread {
 	ObjectInputStream ois;
 	HashMap<Object, Object> resMap;
 
+	Toolkit tk1 = Toolkit.getDefaultToolkit(); // 비프음
+	
 	public RcvThread(ObjectInputStream ois) {
 		// TODO Auto-generated constructor stub
 
@@ -24,12 +26,11 @@ public class RcvThread extends Thread {
 
 			while (true) {
 
-				
-					resMap = (HashMap<Object, Object>) ois.readObject();
-					
-					System.out.println("resMap : " + resMap);
-					
-					if (resMap != null) {
+				resMap = (HashMap<Object, Object>) ois.readObject();
+
+				System.out.println("resMap : " + resMap);
+
+				if (resMap != null) {
 					String command = (String) resMap.get("command");
 
 					System.out.println("coammand : " + command);
@@ -46,15 +47,13 @@ public class RcvThread extends Thread {
 						Login.resMap = resMap;
 						Login.call = true;
 
-						
-
 						break;
-						
+
 					case "afterMain":
-						
+
 						MainViewFrame.call = true;
-						MainViewFrame.resMap =resMap;
-						
+						MainViewFrame.resMap = resMap;
+
 						break;
 //
 //				case "afterUpdate":
@@ -69,56 +68,162 @@ public class RcvThread extends Thread {
 //					Accreditation.call = true;
 //					Accreditation.resMap = resMap;
 //					break;
-//					
 
-					case "chat":
-						Toolkit tk1 = Toolkit.getDefaultToolkit(); // 비프음
-
-						int chatId = (Integer) resMap.get("ChatId");
-
-//					for(ChatRoomFrame Room : ChatClient.chatList) {
-//						
-//						if(room.getChatId == chatId) {
-//							
-//							room.call = true;
-//							room.resMap = resMap;
-//							break;
-//							
-//						}
-//						
-//					}
-						tk1.beep();
-						break;
 
 					case "afterSelectByName":
-						
+
 						EmployeeSearch.resMap = resMap;
-						System.out.println("search : "+EmployeeSearch.resMap);
+						System.out.println("search : " + EmployeeSearch.resMap);
 						EmployeeSearch.call = true;
 						System.out.println(EmployeeSearch.call);
 
-						
-
 						break;
-						
+
 					case "afterFindFileList": // ������ ���� �� fileList�� down gui���� ����
 						FileDownGui.call = true;
 						FileDownGui.resMap = resMap;
-						if(resMap == null) System.out.println("yes");
-						else System.out.println("yes");
+						if (resMap == null)
+							System.out.println("yes");
+						else
+							System.out.println("yes");
 						break;
-					
+
 					case "downContent": // �����κ��� �� file������ downgui���� ����
 						FileDownGui.call = true;
 						FileDownGui.resMap = resMap;
 						break;
-						
+
 					case "saveFileFail":
 						FileUpGui.call = true;
 						FileUpGui.resMap = resMap;
 						break;
 
+					case "afterReadChat":
+						for (ChatGUI chat : ChatClient.chatList) {
+
+							int rcvId = (Integer) resMap.get("chatId");
+
+							if (chat.getRoom().getChatListDTO().getChatId() == rcvId) {
+
+								chat.setResMap(resMap);
+								chat.setCall(true);
+								break;
+
+							}
+
+						}
+
+						break;
+
+					case "afterSendChat":
+
+						
+						boolean sendResult = (boolean) resMap.get("result");
+						if (!sendResult) {
+							for (ChatGUI chat : ChatClient.chatList) {
+								int rcvId = (Integer) resMap.get("chatId");
+								if (chat.getRoom().getChatListDTO().getChatId() == rcvId) {
+
+									chat.setResMap(resMap);
+									chat.setCall(true);
+									break;
+
+								}
+
+							}
+						}
+						
+
+						break;
+						
+					case "send":
+						int senIndex =0;
+						for (ChatGUI chat : ChatClient.chatList) {
+							
+							int rcvId = (Integer) resMap.get("chatId");
+							if (chat.getRoom().getChatListDTO().getChatId() == rcvId) {
+
+								chat.setResMap(resMap);
+								chat.setCall(true);
+								break;
+
+							}
+							if(ChatClient.chatList.size()== senIndex) {
+								
+								
+								//채팅방이 켜져있지 않을 시
+								
+								
+								
+							}
+
+							senIndex++;
+						}
+						
+						tk1.beep();
+						
+						break;
+						
+					case "updateRoom":
+						
+						int upIndex =0;
+						for (ChatGUI chat : ChatClient.chatList) {
+							
+							int rcvId = (Integer) resMap.get("chatId");
+							if (chat.getRoom().getChatListDTO().getChatId() == rcvId) {
+
+								chat.setResMap(resMap);
+								chat.setCall(true);
+								break;
+
+							}
+							
+							MainViewFrame.call = true;
+							MainViewFrame.resMap = resMap;
+
+
+							upIndex++;
+						}
+						
+						
+						break;
+						
+					case "afterInvite":
+						
+						int inviteResult = (Integer) resMap.get("inviteResult");
+						if (inviteResult!=1) {
+							for (ChatGUI chat : ChatClient.chatList) {
+								int rcvId = (Integer) resMap.get("chatId");
+								if (chat.getRoom().getChatListDTO().getChatId() == rcvId) {
+
+									chat.setResMap(resMap);
+									chat.setCall(true);
+									break;
+
+								}
+								
+
+							}
+						}
+						
+						
+						break;
+						
+					case "afterCreateRoom":
+						
+						
+						String failUsers = (String)resMap.get("inviteResult");
+						
+						MainViewFrame.call = true;
+						MainViewFrame.resMap = resMap;
+		
+	
+						
+						break;
+						
+
 					default:
+						
 
 						break;
 
@@ -128,7 +233,7 @@ public class RcvThread extends Thread {
 			}
 
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 			System.out.println("rcvThread Error");
 
