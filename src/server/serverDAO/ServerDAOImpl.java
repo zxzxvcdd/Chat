@@ -288,6 +288,40 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 
 	}
+	
+
+	@Override
+	public boolean updateChat(ChatListDTO chat) {
+		// TODO Auto-generated method stub
+
+		String sql = "update chat_lists set chat_path = ? where chat_id = ?)";
+
+		try {
+			pst = con.prepareStatement(sql);
+
+	
+			pst.setString(1, chat.getChatPath());
+			pst.setInt(2, chat.getChatId());
+
+			int result = pst.executeUpdate();
+
+			if (result >= 1) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+			System.out.println("updateChat error");
+
+			return false;
+
+		}
+
+	}
+	
 
 	@Override
 	public int findChatSeq() {
@@ -482,17 +516,19 @@ public class ServerDAOImpl implements ServerDAO {
 
 	}
 
+	
 	@Override
-	public boolean joinChat(int empId, int chatId) {
+	public boolean joinChat(int empId,String empName, int chatId) {
 		// TODO Auto-generated method stub
 
-		String sql = "insert into chat_users (user_id, employee_id, chat_id)" + " values(chat_user_seq.NEXTVAL, ?, ?)";
+		String sql = "insert into chat_users (user_id, employee_id, chat_id, employee_name)" + " values(chat_user_seq.NEXTVAL, ?, ?, ?)";
 
 		try {
 			pst = con.prepareStatement(sql);
 
 			pst.setInt(1, empId);
 			pst.setInt(2, chatId);
+			pst.setString(3, empName);
 
 			int result = pst.executeUpdate();
 
@@ -543,7 +579,7 @@ public class ServerDAOImpl implements ServerDAO {
 			List<ChatUserDTO> userList = null;
 			while (rs.next()) {
 
-				ChatUserDTO user = new ChatUserDTO(rs.getInt("user_i"), rs.getInt("employee_id"), rs.getInt("chat_id"));
+				ChatUserDTO user = new ChatUserDTO(rs.getInt("user_i"), rs.getInt("employee_id"), rs.getInt("chat_id"), rs.getString("employee_name"));
 
 				userList.add(user);
 

@@ -38,9 +38,8 @@ public interface ServerDAO {
 	
 	public boolean modifyChatFilePath(int chatId, String filePath);
 	
+	boolean joinChat(int empId, String empName, int chatId);
 	
-	public boolean joinChat(int empId, int chatId);
-
 	public List<ChatUserDTO> findChatUser(Map<String, Object> checkMap);
 	
 	
@@ -59,5 +58,6 @@ public interface ServerDAO {
 	public boolean deleteDepartments(int depId);
 	
 	public boolean modifyDepartments(DepDTO dep);
-	
+	boolean updateChat(ChatListDTO chat);
+
 }

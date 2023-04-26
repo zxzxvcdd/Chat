@@ -49,14 +49,25 @@ public class ChatService {
 		  
 	}
 	
-	public boolean loginEmployee(int id, String pw) {
+	public EmpDTO loginEmployee(int id, String pw) {
 		
 		boolean result = dao.login(id, pw);
 		
+		if(result) {
+			
+			EmpDTO emp =dao.findOneEmployees(id);
+			
+			return emp;
+			
+		}else {
+			
+			return null;
+		}
+			
 
 		
 		
-		return result;
+
 		
 	}
 	
@@ -103,11 +114,11 @@ public class ChatService {
 			for (ChatUserDTO user : userList) {
 
 				int chatId = user.getChatId();
-				Map<String, Object> checkMap2 = new HashMap<String,Object>();
+				
 				ChatListDTO chat = dao.findChat(chatId);
 
 				String type = "chat_id";
-
+				Map<String, Object> checkMap2 = new HashMap<String,Object>();
 				checkMap2.put("type", type);
 				checkMap2.put("value", chatId);
 
@@ -187,6 +198,129 @@ public class ChatService {
 
 
 	
+	
+	   public String readChat(ChatInfo room) throws IOException {
+		      // TODO Auto-generated method stub
+		      
+		      String chatPath = room.getChatListDTO().getChatPath();
+		      
+		      File file = new File("chatPath");
+		      FileReader fr = new FileReader(file);
+		      BufferedReader br = new BufferedReader(fr);
+		      String line = "";
+		      String chatString = "";
+		      
+		      while((line = br.readLine()) != null)   chatString += (line +"\n");
+		      br.close();
+		      return chatString;
+		      
+
+		      
+		   }
+	   
+	   
+		public boolean writeChat(ChatInfo room, String chat) throws Exception {
+			
+			String path = room.getChatListDTO().getChatPath();
+		
+			
+			boolean result = false;
+			
+			try(FileWriter fw = new FileWriter(path, true)) {
+					fw.write(chat);
+					fw.close();
+					result = true;
+			}catch(Exception e) {
+				result = false;
+			}finally {
+			
+			return result;
+			}
+			
+		}
+
+		public ChatInfo inviteEmployees(ChatInfo updateRoom, EmpDTO newEmp) {
+			// TODO Auto-generated method stub
+			
+			int empId = newEmp.getEmployeeId();
+			
+			int chatId = updateRoom.getChatListDTO().getChatId();
+			
+			
+			boolean result = dao.joinChat(empId, newEmp.getName(), chatId);
+			
+			if(result) {
+				
+				Map<String, Object> checkMap = new HashMap<String,Object>();
+				checkMap.put("type", "chat_id");
+				checkMap.put("value", chatId);
+				
+				List<ChatUserDTO> userList = dao.findChatUser(checkMap);				
+				
+				updateRoom.setChatUserDTO(userList);
+			
+				return updateRoom;
+				
+				
+			}else {
+				
+				return null;
+			}
+			
+			
+			
+			
+		}
+
+		public ChatListDTO createRoom(String chatName) {
+			// TODO Auto-generated method stub
+			
+			ChatListDTO chat = new ChatListDTO();
+			
+			String path = "";
+			
+			chat.setChatName(chatName);
+			
+			
+			
+			boolean CreateChat = dao.createChat(chat);
+			
+			if(CreateChat) {
+				
+				int chatId =dao.findChatSeq();
+				
+				chat.setChatId(chatId);
+				
+				
+				path = "C:/chat/"  + chatId;
+				PrintWriter pw = null;
+				boolean createFile = true;
+				try {
+					if (path != null) {
+						File file = new File(path);
+						if(!file.exists()) file.mkdirs();
+						File file2 = new File(file, chatName + ".txt");
+						if(!file2.exists())	file2.createNewFile();
+					}
+					else  createFile = false;
+				}catch(Exception e) {
+					createFile = false;
+				}
+				
+				
+				chat.setChatPath(path);
+				
+				
+				boolean updateResult = dao.updateChat(chat);
+				if(updateResult) {
+					return chat;
+				}
+			}
+			
+			
+			return null;
+		}
+	   
 	
 	
 	
