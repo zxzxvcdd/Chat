@@ -5,13 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,7 +18,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
@@ -29,7 +26,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import server.serverDTO.ChatInfo;
-import server.serverDTO.ChatListDTO;
 import server.serverDTO.EmpDTO;
 
 public class MainViewFrame extends JFrame implements Runnable, ActionListener, ListSelectionListener {
@@ -48,10 +44,8 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 	private JList sawonList;
 	private JTable empTable;
 	private JTable chatTable;
-	
-	
 
-	private List<Integer> tEmpIds = new ArrayList<Integer>();
+	private List<EmpDTO> tEmpIds = new ArrayList<EmpDTO>();
 	private int tChatId;
 
 	private String[] empTabNames = { "부서", "직급", "이름", "번호", "id" };
@@ -70,11 +64,6 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		this.oos = oos;
 		this.emp = emp;
 		this.empId = emp.getEmployeeId();
-
-		System.out.println(empId);
-
-		
-		
 
 		reqMap.put("command", "main");
 		reqMap.put("type", "employee_id");
@@ -117,6 +106,28 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		createButten.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+
+				if (e.getSource() == createButten) {
+
+					// Add your search logic here
+
+					System.out.println(tEmpIds);
+
+					
+					reqMap = new HashMap<Object, Object>();
+					reqMap.put("command", "invite");
+					reqMap.put("newUsers",tEmpIds );
+					reqMap.put("newRoom", true);
+					
+					try {
+
+						oos.writeObject(reqMap);
+						oos.flush();
+
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
 
 			}
 		});
@@ -167,25 +178,23 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
-				if (e.getSource()==empSearchButton) {
-					
-					
+				if (e.getSource() == empSearchButton) {
+
 					// Add your search logic here
-					
+
 					System.out.println("검색 이벤트");
-					
+
+					reqMap = new HashMap<Object, Object>();
 					reqMap.put("command", "selectByName");
 					reqMap.put("name", empSearchText.getText());
-					
-					
-					
+
 					try {
 
 						oos.writeObject(reqMap);
-						System.out.println("검색"+reqMap);
+						System.out.println("검색 reqMap: " + reqMap);
 
 						oos.flush();
-						
+
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
@@ -210,7 +219,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		empTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-		
+
 				if (e.getSource() == empTable) {
 					JTable jtable = (JTable) e.getSource();
 					tEmpIds.clear();
@@ -220,21 +229,23 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 					}
 					for (int i : rows) {
 
-						System.out.println(tEmpIds);
-						
 						int tEmpid = (int) empModel.getValueAt(i, 4);
+						String tName = (String)empModel.getValueAt(i,2);
 						
-						tEmpIds.add(tEmpid);
+						EmpDTO tUser = new EmpDTO();
+						tUser.setEmployeeId(tEmpid);
+						tUser.setName(tName);
+						tEmpIds.add(tUser);
 
 					}
+					
+					System.out.println("선택된 행수" +tEmpIds.size());
+				
+				}
+			}
 
-				
-				
-			}
-			}
-			
 		});
-		
+
 		empTable.getColumn("id").setWidth(0);
 		empTable.getColumn("id").setMaxWidth(0);
 		empTable.getColumn("id").setMinWidth(0);
@@ -242,19 +253,19 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 		chatTable = new JTable(chatModel);
 		chatTable.setBounds(64, 339, 359, 21);
-		empTable.addMouseListener(new MouseAdapter() {
+		chatTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-		
+
 				if (e.getSource() == chatTable) {
 					JTable jtable = (JTable) e.getSource();
 					int row = jtable.getSelectedRow();
 					tChatId = (int) chatModel.getValueAt(row, 3);
 
 				}
-			
+
 			}
-			
+
 		});
 		chatTable.getColumn("id").setWidth(0);
 		chatTable.getColumn("id").setMaxWidth(0);
@@ -275,7 +286,6 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		t1.start();
 
 	}
-
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -307,9 +317,9 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 							System.out.println("emp 테이블 생성");
 							for (EmpDTO emp : empList) {
-								System.out.println(emp);
+
 								empModel.addRow(new Object[] { emp.getDepartmentName(), emp.getJobTitle(),
-										emp.getName(), emp.getTel(),emp.getEmployeeId() });
+										emp.getName(), emp.getTel(), emp.getEmployeeId() });
 
 							}
 
@@ -319,7 +329,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 							chatModel.setNumRows(0);
 							System.out.println("chat 테이블 생성");
 							for (ChatInfo myChat : roomList) {
-								System.out.println(myChat);
+
 								chatModel.addRow(new Object[] { myChat.getChatListDTO().getChatName(),
 										"" + myChat.getChatUserDTO().size() });
 
@@ -335,6 +345,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 						String printEmpList = "";
 						empList = (List<EmpDTO>) resMap.get("empList");
+						System.out.println("크기" + empList.size());
 						if (empList.size() != 0) {
 
 							empModel.setNumRows(0);
@@ -344,7 +355,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 								System.out.println(emp);
 								empModel.addRow(new Object[] { emp.getDepartmentName(), emp.getJobTitle(),
-										emp.getName(), emp.getTel() });
+										emp.getName(), emp.getTel(), emp.getEmployeeId() });
 
 							}
 
@@ -355,11 +366,21 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 						call = false;
 
 						break;
+						
+					case "afterCreateRoom":
+						
+						System.out.println("방생성 이벤트");
+						ChatInfo room = (ChatInfo)resMap.get("room");
+						System.out.println(room);
+						new ChatGUI(oos, room, emp);
+						
+						call=false;
+						break;
+					
 
 					}
 
-				}
-				System.out.printf("");
+				} else System.out.printf("");
 			}
 
 		} catch (Exception e) {

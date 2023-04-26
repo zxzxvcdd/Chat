@@ -20,10 +20,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
+
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import server.serverDTO.ChatInfo;
 import server.serverDTO.ChatListDTO;
@@ -74,7 +77,7 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 	private JPanel contentPane;
 
 	// 채팅
-	private JLabel chatName; // 방이름
+	private JTextArea chatName; // 방이름
 	private JButton fileSendBT; // 파일 업로드
 	private JTextArea chatInput; // Text 출력
 	private JButton chatSendBT; // 입력받은 text 보내는 버튼
@@ -82,9 +85,16 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 	// 접속자
 	private JLabel userLabel;
 	private JTextArea userList;
-	private JButton firedownBT;
+	private JButton fileDownBT;
 
-	private JScrollPane scrollPane;
+	
+	
+	private String[] empTabNames = { "id","이름" };
+	private DefaultTableModel empModel = new DefaultTableModel(empTabNames, 0);
+	private JTable empTable;
+	
+	
+	private JScrollPane userScrollPane;
 	private JScrollPane outputScrollPane;
 	private JScrollPane inputScrollPane;
 	private HashMap<Object, Object> reqMap;
@@ -101,17 +111,28 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 		this.oos = oos;
 		this.room = room;
 		this.myEmp = emp;
+		
+
 
 		reqMap = new HashMap<Object, Object>();
 		String names = "";
 
-		String roomName = room.getChatListDTO().getChatName();
+		String roomName ="";
+		roomName = room.getChatListDTO().getChatName();
 
-		chatName.setText(roomName);
+		setTitle(roomName);
+		
 		
 		for (ChatUserDTO user : room.getChatUserDTO()) {
 
 			names += user.getName() + "\n";
+
+		}
+
+		//
+		for (ChatUserDTO user : room.getChatUserDTO()) {
+
+			empModel.addRow(new Object[] { user.getEmployeeId(), user.getName()});
 
 		}
 
@@ -167,13 +188,13 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		chatSendBT.setIcon(new ImageIcon(ChatGUI.class.getResource("/icon/chatbt.png")));
+		chatSendBT.setIcon(new ImageIcon(ChatGUI.class.getResource("/client/icon/chatbt.png")));
 		chatSendBT.setBounds(535, 468, 97, 83);
 		contentPane.add(chatSendBT);
 
 		fileSendBT = new JButton("\uD30C\uC77C\uC5C5\uB85C\uB4DC");
 		fileSendBT.setFont(new Font("굴림", Font.PLAIN, 16));
-		fileSendBT.setIcon(new ImageIcon(ChatGUI.class.getResource("/icon/plus.png")));
+		fileSendBT.setIcon(new ImageIcon(ChatGUI.class.getResource("/client/icon/plus.png")));
 		fileSendBT.setBounds(12, 468, 119, 83);
 		contentPane.add(fileSendBT);
 
@@ -183,12 +204,10 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 		chatInput.setColumns(10);
 		chatInput.setEditable(false);
 
-		JScrollBar inputScrollBar = new JScrollBar(JScrollBar.VERTICAL);
 
 		inputScrollPane = new JScrollPane(chatInput);
 		inputScrollPane.setBounds(143, 56, 487, 402);
 		inputScrollPane.setViewportView(chatInput);
-		inputScrollPane.setVerticalScrollBar(inputScrollBar);
 		contentPane.add(inputScrollPane);
 
 		outputScrollPane = new JScrollPane();
@@ -197,43 +216,46 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 
 		JTextArea chatOutput = new JTextArea();
 		outputScrollPane.setViewportView(chatOutput);
-		JScrollBar outputScrollBar = new JScrollBar(JScrollBar.VERTICAL);
-		outputScrollPane.setVerticalScrollBar(outputScrollBar);
+		
 
 		chatOutput = new JTextArea();
 		chatOutput.setBounds(143, 468, 393, 83);
 
-		chatName = new JLabel("\uBC29\uC774\uB984");
-		chatName.setFont(new Font("굴림", Font.PLAIN, 20));
-		chatName.setBounds(12, 10, 643, 37);
-		contentPane.add(chatName);
+
 
 		userLabel = new JLabel(" \uCC44\uD305 \uCC38\uC5EC\uC790");
 		userLabel.setFont(new Font("굴림", Font.PLAIN, 20));
 		userLabel.setBounds(12, 50, 119, 32);
 		contentPane.add(userLabel);
 
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(12, 92, 119, 282);
-		contentPane.add(scrollPane);
+		
+	
 
-		scrollPane.setViewportView(userList);
-		JScrollBar scrollBar2 = new JScrollBar(JScrollBar.VERTICAL);
-		scrollPane.setVerticalScrollBar(scrollBar2);
+		empTable = new JTable(empModel);
+		empTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
 
-		userList = new JTextArea();
-		chatInput.setFont(new Font("굴림", Font.PLAIN, 12));
-		userList.setBounds(12, 92, 119, 282);
-		contentPane.add(userList);
 
-		firedownBT = new JButton("\uD30C\uC77C\uB2E4\uC6B4");
-		firedownBT.setFont(new Font("굴림", Font.PLAIN, 16));
-		firedownBT.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		firedownBT.setBounds(12, 390, 119, 68);
-		contentPane.add(firedownBT);
+				}
+			});
+
+		empTable.getColumn("id").setWidth(0);
+		empTable.getColumn("id").setMaxWidth(0);
+		empTable.getColumn("id").setMinWidth(0);
+		empTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+		userScrollPane= new JScrollPane(empTable);
+		userScrollPane.setBounds(12, 92, 119, 282);
+		contentPane.add(userScrollPane);
+	
+
+		fileDownBT = new JButton("\uD30C\uC77C\uB2E4\uC6B4");
+		fileDownBT.setFont(new Font("굴림", Font.PLAIN, 16));
+		fileDownBT.setBounds(12, 390, 119, 68);
+		contentPane.add(fileDownBT);
+		
+
 
 		setVisible(true);
 

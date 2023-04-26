@@ -204,7 +204,7 @@ public class ChatService {
 		      
 		      String chatPath = room.getChatListDTO().getChatPath();
 		      
-		      File file = new File("chatPath");
+		      File file = new File(chatPath+"/"+room.getChatListDTO().getChatName()+".txt");
 		      FileReader fr = new FileReader(file);
 		      BufferedReader br = new BufferedReader(fr);
 		      String line = "";
@@ -226,7 +226,7 @@ public class ChatService {
 			
 			boolean result = false;
 			
-			try(FileWriter fw = new FileWriter(path, true)) {
+			try(FileWriter fw = new FileWriter(path+"/"+room.getChatListDTO().getChatName()+".txt", true)) {
 					fw.write(chat);
 					fw.close();
 					result = true;

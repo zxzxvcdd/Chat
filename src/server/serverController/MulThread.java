@@ -94,8 +94,8 @@ public class MulThread extends Thread {
 					emp = service.loginEmployee(emp.getEmployeeId(), emp.getPw());
 
 					resMap.put("emp", emp);
-					
-					if (emp!=null) {
+
+					if (emp != null) {
 						resMap.put("command", "afterLogin");
 						resMap.put("loginResult", true);
 
@@ -106,7 +106,7 @@ public class MulThread extends Thread {
 					}
 
 					break;
-					
+
 				case "selectByName":
 
 					String name = (String) reqMap.get("name");
@@ -118,7 +118,6 @@ public class MulThread extends Thread {
 					System.out.println(empList);
 
 					break;
-					
 
 				case "main":
 
@@ -156,10 +155,6 @@ public class MulThread extends Thread {
 //				resMap.put("command",);
 
 					break;
-
-
-
-				
 
 				case "findFileList": // service�� ���� filelist ��ü�� �޾� Rcv�� ����
 					int fchatId = (Integer) reqMap.get("chatId");
@@ -208,12 +203,11 @@ public class MulThread extends Thread {
 					String chat = service.readChat(readRoom);
 
 					resMap.put("command", "afterReadChat");
-					
+
 					resMap.put("chatId", readRoom.getChatListDTO().getChatId());
-					
-					resMap.put("chat",chat);
-					
-					
+
+					resMap.put("chat", chat);
+
 					break;
 
 				case "sendChat":
@@ -225,7 +219,7 @@ public class MulThread extends Thread {
 					String newChat = emp.getName() + ":\t" + sendString + "\n";
 
 					boolean sendResult = service.writeChat(sendRoom, newChat);
-					
+
 					resMap.put("chatId", sendRoom.getChatListDTO().getChatId());
 
 					if (sendResult) {
@@ -240,14 +234,13 @@ public class MulThread extends Thread {
 
 							roomThread.sendChat(resMap);
 
-							
 						}
 
 					}
 
 					resMap.put("command", "afterSendChat");
 					resMap.put("result", sendResult);
-			
+
 					break;
 
 				case "invite":
@@ -259,44 +252,54 @@ public class MulThread extends Thread {
 
 					if (checkNew || updateRoom == null) {
 
+						System.out.println("invite " + reqMap);
+
 						String chatName = (String) reqMap.get("chatName");
 
 						List<EmpDTO> newUsers = (List<EmpDTO>) reqMap.get("newUsers");
 
-						if (chatName.length() == 0) {
+				
+
+						if (chatName == null) {
+
+							chatName = "";
+							
 
 							for (EmpDTO newUser : newUsers) {
 
-								chatName += newUser.getName();
+								chatName += newUser.getName() + "님 ";
 
 							}
+							chatName += "의 채팅방";
+						}
 
-							ChatListDTO newRoom = service.createRoom(chatName);
+					
 
-							updateRoom = new ChatInfo();
-							
-							updateRoom.setChatListDTO(newRoom);
-							int cnt = 0;
-							String failUsers = "";
-							for (EmpDTO newUser : newUsers) {
+						ChatListDTO newRoom = service.createRoom(chatName);
 
-								resMap = invite(updateRoom, newUser);
+						updateRoom = new ChatInfo();
 
-								int result = (Integer)resMap.get("inviteResult");
-								
-								if(result!=1) {
-									cnt++;
-									failUsers += newUser.getName() +"\tfail result:" + result+"\n";
-								}
-								
+						updateRoom.setChatListDTO(newRoom);
+						int cnt = 0;
+						String failUsers = "";
+						for (EmpDTO newUser : newUsers) {
+
+							resMap = invite(updateRoom, newUser);
+
+							int result = (Integer) resMap.get("inviteResult");
+
+							if (result != 1) {
+								cnt++;
+								failUsers += newUser.getName() + "\tfail result:" + result + "\n";
 							}
-							resMap.put("command", "afterCreateRoom");
-							resMap.put("result","failUsers");
-							resMap.put("chatId", updateRoom.getChatListDTO().getChatId());
-							
-							
 
 						}
+
+				
+						resMap.put("command", "afterCreateRoom");
+						resMap.put("CreateResult", "failUsers");
+						resMap.put("room", updateRoom);
+
 					} else {
 
 						resMap = invite(updateRoom, newEmp);
@@ -314,8 +317,10 @@ public class MulThread extends Thread {
 				oos.flush();
 
 			}
-		} catch (Exception e) {
-			// e.printStackTrace();
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
 
 		} finally {
 			// 나간 쓰레드의 인덱스 찾기
@@ -394,7 +399,6 @@ public class MulThread extends Thread {
 
 		}
 
-		
 		resMap.put("command", "afterInvite");
 
 		return resMap;

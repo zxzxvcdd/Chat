@@ -1,7 +1,12 @@
 package server.serverDTO;
 
-public class ChatListDTO {
+import java.io.Serializable;
 
+public class ChatListDTO implements Serializable {
+
+	
+	private static final long serialVersionUID = 1L;
+	
 	private int chatId;
 	private String chatName;
 	private String chatPath;

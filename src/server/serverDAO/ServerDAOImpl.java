@@ -167,6 +167,53 @@ public class ServerDAOImpl implements ServerDAO {
 	}
 
 	@Override
+	public List<EmpDTO> findEmployees(String name) {
+
+		String sql = "select e.*, d.department_name" + " from employees e, departments d"
+				+ " where e.department_id = d.department_id and name like ?";
+		
+		try {
+
+			pst = new LoggableStatement(con, sql);
+
+			pst.setString(1, "%"+name+"%");
+
+			 
+//
+//			System.out.println("\t sQuery ? " +
+//			                                    ((LoggableStatement)pst).getQueryString() + "\n");
+
+			 
+			rs = pst.executeQuery();
+
+			List<EmpDTO> empList = new ArrayList<EmpDTO>();
+
+			while (rs.next()) {
+
+				EmpDTO emp = new EmpDTO(rs.getInt("employee_id"), rs.getString("pw"), rs.getString("name"),
+						rs.getInt("department_id"), rs.getString("tel"), rs.getString("admin"),
+						rs.getString("job_title"));
+
+				emp.setDepartmentName(rs.getString("department_name"));
+				empList.add(emp);
+
+			}
+
+			return empList;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+			System.out.println("findEmployees error");
+
+			return null;
+
+		}
+
+	}
+	
+
+	@Override
 	public EmpDTO findOneEmployees(int empId) {
 		// TODO Auto-generated method stub
 		String sql = "select * from employees" + " where employee_id = ?";
@@ -192,6 +239,7 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 
 	}
+
 
 	@Override
 	public boolean modifyEmployees(EmpDTO emp) {
@@ -263,7 +311,7 @@ public class ServerDAOImpl implements ServerDAO {
 	public boolean createChat(ChatListDTO chat) {
 		// TODO Auto-generated method stub
 
-		String sql = "insert into chat_lists (chat_id, chat_name, chat_path)" + " values(chat_seq.NEXTVAL, ?, ?)";
+		String sql = "insert into chat_lists (chat_id, chat_name, chat_path)" + " values(chat_list_seq.NEXTVAL, ?, ?)";
 
 		try {
 			pst = con.prepareStatement(sql);
@@ -295,15 +343,21 @@ public class ServerDAOImpl implements ServerDAO {
 	public boolean updateChat(ChatListDTO chat) {
 		// TODO Auto-generated method stub
 
-		String sql = "update chat_lists set chat_path = ? where chat_id = ?)";
+		String sql = "update chat_lists set chat_path = ? where chat_id = ?";
 
 		try {
-			pst = con.prepareStatement(sql);
-
+//			pst = con.prepareStatement(sql);
+			pst = new LoggableStatement(con, sql);
 	
 			pst.setString(1, chat.getChatPath());
 			pst.setInt(2, chat.getChatId());
 
+			System.out.println("\t sQuery ? " +
+            ((LoggableStatement)pst).getQueryString() + "\n");
+
+
+
+			
 			int result = pst.executeUpdate();
 
 			if (result >= 1) {
@@ -352,43 +406,6 @@ public class ServerDAOImpl implements ServerDAO {
 
 	}
 
-	@Override
-	public List<EmpDTO> findEmployees(String name) {
-
-		String sql = "select * from employees" + " where name = ?";
-
-		try {
-
-			pst = con.prepareStatement(sql);
-
-			pst.setString(1, name);
-
-			rs = pst.executeQuery();
-
-			List<EmpDTO> empList = new ArrayList<EmpDTO>();
-
-			while (rs.next()) {
-
-				EmpDTO emp = new EmpDTO(rs.getInt("employee_id"), rs.getString("pw"), rs.getString("name"),
-						rs.getInt("department_id"), rs.getString("tel"), rs.getString("admin"),
-						rs.getString("job_title"));
-
-				empList.add(emp);
-
-			}
-
-			return empList;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-
-			System.out.println("findEmployees error");
-
-			return null;
-
-		}
-
-	}
 
 	@Override
 	public boolean accreditation(int id) { // 본인인증
@@ -461,7 +478,7 @@ public class ServerDAOImpl implements ServerDAO {
 	public ChatListDTO findChat(int chatId) {
 		// TODO Auto-generated method stub
 
-		String sql = "selcet * from chat_lists where chat_id = ?";
+		String sql = "select * from chat_lists where chat_id = ?";
 
 		try {
 			pst = con.prepareStatement(sql);
@@ -556,14 +573,14 @@ public class ServerDAOImpl implements ServerDAO {
 
 
 		try {
-//			pst = con.prepareStatement(sql);
+			
 			
 			String type = (String) checkMap.get("type");
 			int value = (Integer) checkMap.get("value");
 			String sql = "select * from chat_users where "+type+"= ?";
-			pst = new LoggableStatement(con, sql);
+//			pst = new LoggableStatement(con, sql);
 
-
+			pst = con.prepareStatement(sql);
 			pst.setInt(1, value);
 			
 			
@@ -577,10 +594,10 @@ public class ServerDAOImpl implements ServerDAO {
 			
 			rs = pst.executeQuery();
 
-			List<ChatUserDTO> userList = null;
+			List<ChatUserDTO> userList = new ArrayList<ChatUserDTO>();
 			while (rs.next()) {
 
-				ChatUserDTO user = new ChatUserDTO(rs.getInt("user_i"), rs.getInt("employee_id"), rs.getInt("chat_id"), rs.getString("employee_name"));
+				ChatUserDTO user = new ChatUserDTO(rs.getInt("user_id"), rs.getInt("employee_id"), rs.getInt("chat_id"), rs.getString("employee_name"));
 
 				userList.add(user);
 

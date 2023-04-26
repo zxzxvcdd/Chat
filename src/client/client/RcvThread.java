@@ -72,10 +72,9 @@ public class RcvThread extends Thread {
 
 					case "afterSelectByName":
 
-						EmployeeSearch.resMap = resMap;
-						System.out.println("search : " + EmployeeSearch.resMap);
-						EmployeeSearch.call = true;
-						System.out.println(EmployeeSearch.call);
+						MainViewFrame.resMap = resMap;
+						
+						MainViewFrame.call = true;
 
 						break;
 
@@ -212,7 +211,7 @@ public class RcvThread extends Thread {
 					case "afterCreateRoom":
 						
 						
-						String failUsers = (String)resMap.get("inviteResult");
+						String failUsers = (String)resMap.get("CreateResult");
 						
 						MainViewFrame.call = true;
 						MainViewFrame.resMap = resMap;
