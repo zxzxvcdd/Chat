@@ -204,6 +204,13 @@ public class MulThread extends Thread {
 
 					String chat = service.readChat(readRoom);
 
+					resMap.put("command", "afterReadChat");
+					
+					resMap.put("chatId", readRoom.getChatListDTO().getChatId());
+					
+					resMap.put("chat",chat);
+					
+					
 					break;
 
 				case "sendChat":
@@ -228,6 +235,7 @@ public class MulThread extends Thread {
 
 							roomThread.sendChat(resMap);
 
+							
 						}
 
 					}
@@ -263,12 +271,23 @@ public class MulThread extends Thread {
 							updateRoom = new ChatInfo();
 							
 							updateRoom.setChatListDTO(newRoom);
-							
+							int cnt = 0;
+							String failUsers = "";
 							for (EmpDTO newUser : newUsers) {
 
 								resMap = invite(updateRoom, newUser);
 
+								int result = (Integer)resMap.get("inviteResult");
+								
+								if(result!=1) {
+									cnt++;
+									failUsers += newUser.getName() +"\tfail result:" + result+"\n";
+								}
+								
 							}
+							resMap.put("command", "afterCreateRoom");
+							resMap.put("result","failUsers");
+							
 
 						}
 					} else {

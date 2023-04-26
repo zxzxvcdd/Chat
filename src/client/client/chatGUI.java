@@ -18,7 +18,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -30,7 +29,7 @@ import server.serverDTO.ChatListDTO;
 import server.serverDTO.ChatUserDTO;
 import server.serverDTO.EmpDTO;
 
-public class chatGUI extends JFrame implements Runnable, ActionListener {
+public class ChatGUI extends JFrame implements Runnable, ActionListener {
 /*
  * 
 
@@ -92,6 +91,9 @@ findChatThread메소드로 채팅방에 들어가있는 사용자를 모두 찾아 send 메소드 실행
 	
 	
 	private JScrollPane scrollPane;
+	private JScrollPane OutputScrollPane;
+	private JScrollPane InputScrollPane;
+	private HashMap<Object, Object> reqMap;
 
 	/**
 	 * Launch the application.
@@ -100,12 +102,13 @@ findChatThread메소드로 채팅방에 들어가있는 사용자를 모두 찾아 send 메소드 실행
 	/**
 	 * Create the frame.
 	 */
-	public chatGUI(ObjectOutputStream oos, ChatInfo room, EmpDTO emp) { //main gui
+	public ChatGUI(ObjectOutputStream oos, ChatInfo room, EmpDTO emp) { //main gui
 		
 		this.oos = oos;
 		this.room = room;
 		this.myEmp =emp;
 		
+		reqMap = new HashMap<Object, Object>();
 		String names = "";
 		
 		
@@ -117,7 +120,21 @@ findChatThread메소드로 채팅방에 들어가있는 사용자를 모두 찾아 send 메소드 실행
 			
 		}
 		
+		//// 생성시 요청
 		
+		
+		reqMap.put("command","readChat");
+		reqMap.put("room", room);
+		
+		try {
+			
+			oos.writeObject(reqMap);
+			oos.flush();
+			
+		}catch(Exception e){
+			
+			
+		}
 		
 		
 		
@@ -143,43 +160,56 @@ findChatThread메소드로 채팅방에 들어가있는 사용자를 모두 찾아 send 메소드 실행
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		chatSendBT.setIcon(new ImageIcon(chatGUI.class.getResource("/icon/chatbt.png")));
+		chatSendBT.setIcon(new ImageIcon(ChatGUI.class.getResource("/icon/chatbt.png")));
 		chatSendBT.setBounds(535, 468, 97, 83);
 		contentPane.add(chatSendBT);
 		
 		
 		fileSendBT = new JButton("");
-		fileSendBT.setIcon(new ImageIcon(chatGUI.class.getResource("/icon/plus.png")));
+		fileSendBT.setIcon(new ImageIcon(ChatGUI.class.getResource("/icon/plus.png")));
 		fileSendBT.setBounds(12, 468, 119, 83);
 		contentPane.add(fileSendBT);
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(143, 56, 487, 402);
-		contentPane.add(scrollPane);
 		
-	
-		JScrollBar scrollBar = new JScrollBar(JScrollBar.VERTICAL);
-		scrollPane.setVerticalScrollBar(scrollBar);
 		
 		chatInput = new JTextArea();
 		chatInput.setFont(new Font("굴림", Font.PLAIN, 12));
 		chatInput.setBounds(143, 56, 487, 402);
 		chatInput.setColumns(10);
-		contentPane.add(chatInput);
+		chatInput.setEditable(false);
 		
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(143, 468, 393, 83);
-		contentPane.add(scrollPane);
+		JScrollBar InputScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+
+		
+		InputScrollPane = new JScrollPane(chatInput);
+		InputScrollPane.setBounds(143, 56, 487, 402);
+		InputScrollPane.setViewportView(chatInput);
+		InputScrollPane.setVerticalScrollBar(InputScrollBar);
+		contentPane.add(InputScrollPane);
+		
+		
+
+		
+		
+
+		
+		
+	
+
+	
+		OutputScrollPane = new JScrollPane();
+		OutputScrollPane.setBounds(143, 468, 393, 83);
+		contentPane.add(OutputScrollPane);
+	
 		JTextArea chatOutput = new JTextArea();
-		scrollPane.setViewportView(chatOutput);
-		JScrollBar scrollBar1 = new JScrollBar(JScrollBar.VERTICAL);
-		scrollPane.setVerticalScrollBar(scrollBar1);
+		OutputScrollPane.setViewportView(chatOutput);
+		JScrollBar OutputScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+		OutputScrollPane.setVerticalScrollBar(OutputScrollBar);
 		
 		chatOutput = new JTextArea();
 		chatOutput.setBounds(143, 468, 393, 83);
-		contentPane.add(chatOutput);
-		
+
 	
 		
 		chatName = new JLabel("\uBC29\uC774\uB984");
@@ -333,6 +363,4 @@ findChatThread메소드로 채팅방에 들어가있는 사용자를 모두 찾아 send 메소드 실행
 	public void setResMap(HashMap<Object, Object> resMap) {
 		this.resMap = resMap;
 	}
-	
-	
 }

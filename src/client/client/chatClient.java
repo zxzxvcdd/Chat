@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
-import client.clientDTO.EmpDTO;
+import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatClient {
 	
-//	static List<ChatRoomFrame> chatList;
+	public static List<ChatGUI> chatList = new ArrayList<ChatGUI>();
 
 
     
