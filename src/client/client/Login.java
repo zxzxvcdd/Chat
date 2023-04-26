@@ -206,11 +206,11 @@ public class Login extends JFrame implements Runnable {
 					System.out.println(result);
 					if (result) { // cm = ClientMain
 						JOptionPane.showMessageDialog(null, "·Î±×ÀÎ¼º°ø");
-						
+						emp = (EmpDTO) resMap.get("emp");
 						dispose();
 						setVisible(false);
 						
-						new MainViewFrame(oos,emp.getEmployeeId()).setVisible(true);
+						new MainViewFrame(oos,emp).setVisible(true);
 						
 						// ë¡œê·¸?¸ ?˜ë©? ê·? ?‹¤?Œ ë©”ì¸?šŒë©´ìœ¼ë¡? ?—°ê²?
 					} else {

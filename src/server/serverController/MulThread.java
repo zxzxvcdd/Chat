@@ -106,6 +106,19 @@ public class MulThread extends Thread {
 					}
 
 					break;
+					
+				case "selectByName":
+
+					String name = (String) reqMap.get("name");
+					empList = service.selectEmpByName(name);
+
+					resMap.put("command", "afterSelectByName");
+					resMap.put("empList", empList);
+
+					System.out.println(empList);
+
+					break;
+					
 
 				case "main":
 
@@ -144,17 +157,7 @@ public class MulThread extends Thread {
 
 					break;
 
-				case "selectByName":
 
-					String name = (String) reqMap.get("name");
-					empList = service.selectEmpByName(name);
-
-					resMap.put("command", "afterSelectByName");
-					resMap.put("empList", empList);
-
-					System.out.println(empList);
-
-					break;
 
 				
 
