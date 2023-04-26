@@ -150,7 +150,8 @@ public class ChatService {
 		return files;		
 	}
 	
-	// Gui���� ������ DB�� ����
+
+	// Gui에서 파일을 DB에 저장
 	public boolean SaveFile(int employee_id, int chat_id, String fileName) throws Exception {
 		FileDTO fdto = new FileDTO();
 		
@@ -160,10 +161,10 @@ public class ChatService {
 		fdto.setFilePath("C:/file/"  + chat_id + "/" + employee_id + "/" +fileName + ".txt");
 		boolean saveFile = dao.saveFile(fdto);
 		
-		return saveFile; // file ���� ����, ����Ȯ�ΰ���
+		return saveFile; // file 저장 실패, 성공확인가능
 	}
 
-	// server pc�� �ִ� ���ϳ����� �о�ͼ� �����ش�
+	// server pc에 있는 파일내용을 읽어와서 보내준다
 	public String readFile(FileDTO fdto) throws IOException {
 		File file = new File(fdto.getFilePath());
 		FileReader fr = new FileReader(file);
@@ -176,24 +177,30 @@ public class ChatService {
 		return content;
 	}
 	
-	public boolean writeFile (int employeeId, int chatId, String fileName, String content) throws IOException {
+	public void writeFile (int employeeId, int chatId, String fileName, String content) throws IOException {
 		String path = "C:/file/"  + chatId + "/" + employeeId;
 		PrintWriter pw = null;
-		boolean writeFilePath = true;
 		try {
 			if (path != null) {
 				File file = new File(path);
 				if(!file.exists()) file.mkdirs();
 				File file2 = new File(file, fileName + ".txt");
-				if(!file2.exists())	file2.createNewFile();
-				FileWriter fw = new FileWriter(file2);
-				pw = new PrintWriter(fw, true);
-				pw.print(content);
+				if(!file2.exists())	{
+					file2.createNewFile();
+					FileWriter fw = new FileWriter(file2, true);
+					pw = new PrintWriter(fw);
+					pw.print(content);
+				}
+				else {
+					File file3 = new File(file, "re_" + fileName + ".txt"); // 새로 생성
+					file3.createNewFile();
+					FileWriter fw = new FileWriter(file3, true);
+					pw = new PrintWriter(fw);
+					pw.print(content);
+				}
 				pw.close();
 			}
-			else  writeFilePath = false;
 		} finally {}
-		return writeFilePath;
 	}
 
 
@@ -203,8 +210,9 @@ public class ChatService {
 		      // TODO Auto-generated method stub
 		      
 		      String chatPath = room.getChatListDTO().getChatPath();
+		     
 		      
-		      File file = new File(chatPath+"/"+room.getChatListDTO().getChatName()+".txt");
+		      File file = new File(chatPath);
 		      FileReader fr = new FileReader(file);
 		      BufferedReader br = new BufferedReader(fr);
 		      String line = "";
@@ -223,19 +231,23 @@ public class ChatService {
 			
 			String path = room.getChatListDTO().getChatPath();
 		
-			
+	
 			boolean result = false;
 			
-			try(FileWriter fw = new FileWriter(path+"/"+room.getChatListDTO().getChatName()+".txt", true)) {
+			
+			try{
+				FileWriter fw = new FileWriter(path, true);
 					fw.write(chat);
+					fw.flush();
 					fw.close();
 					result = true;
+					return result;
 			}catch(Exception e) {
 				result = false;
-			}finally {
-			
-			return result;
+				return result;
 			}
+		
+			
 			
 		}
 
@@ -281,8 +293,7 @@ public class ChatService {
 			
 			chat.setChatName(chatName);
 			
-			
-			
+		
 			boolean CreateChat = dao.createChat(chat);
 			
 			if(CreateChat) {
@@ -293,6 +304,8 @@ public class ChatService {
 				
 				
 				path = "C:/chat/"  + chatId;
+				chat.setChatPath(path + "/" + chatName + ".txt");
+				
 				PrintWriter pw = null;
 				boolean createFile = true;
 				try {
@@ -308,7 +321,7 @@ public class ChatService {
 				}
 				
 				
-				chat.setChatPath(path);
+				
 				
 				
 				boolean updateResult = dao.updateChat(chat);

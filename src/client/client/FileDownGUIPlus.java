@@ -1,117 +1,119 @@
 package client.client;
 
 import java.awt.Choice;
-import java.awt.EventQueue;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import server.serverDAO.ServerDAO;
 import server.serverDTO.FileDTO;
-import server.serverService.ChatService;
-import java.awt.Color;
-import java.awt.Font;
 
-public class FileDownGui extends JFrame implements Runnable {
+public class FileDownGUIPlus extends JFrame implements Runnable  {//implements Runnable
 
-	// ¿©±â¿¡ ½º·¹µå·Î º¸³¾¶§ ÇÊ¿äÇÑ º¯¼öµéÀ» ´Ù³Ö°í
-	static boolean call = false;
+	// ì—¬ê¸°ì— ìŠ¤ë ˆë“œë¡œ ë³´ë‚¼ë•Œ í•„ìš”í•œ ë³€ìˆ˜ë“¤ì„ ë‹¤ë„£ê³ 
+	public static boolean call = false;
 	private JPanel contentPane;
 	private JTextField txt_name;
 	private JTextField txt_path;
-	HashMap<Object, Object> reqMap; // Å¬¶óÀÌ¾ğÆ®°¡ º¸³¿
-	static HashMap<Object, Object> resMap; // Å¬¶óÀÌ¾ğÆ®°¡ ¹ŞÀ½
-	
+	private JTextArea fileListText;
+	private DefaultListModel model;
+	private JList list;
+	private JScrollPane scrollPane;
+	HashMap<Object, Object> reqMap; // í´ë¼ì´ì–¸íŠ¸ê°€ ë³´ëƒ„
+	public static HashMap<Object, Object> resMap; // í´ë¼ì´ì–¸íŠ¸ê°€ ë°›ìŒ
 	String client_path;
 	String client_fname;
 	String command;
 	FileDTO fdto;
 	ObjectOutputStream oos;
+	Choice choice;
+	String input;
+	int chatId;
 	List<FileDTO> files;
 	
 
 	/**
 	 * Launch the application.
 	 */	
+
 	
-	
-	// gui Ã¢
-	public FileDownGui(ObjectOutputStream oos, int chatId) throws IOException {
+	// gui ì°½
+	public FileDownGUIPlus(ObjectOutputStream oos, int chatId ) throws IOException {
 		this.oos = oos;
+		this.chatId = chatId;
 		
-		// ÀüÃ¼Ã¢
+		
+		String command = "findFileList";
+	      reqMap = new HashMap<Object, Object>();
+	      reqMap.put("command", command);
+	      reqMap.put("chatId", chatId);
+	      
+	      try {
+	      oos.writeObject(reqMap);
+	      oos.flush();
+	      }catch(Exception e){
+	    	  
+	      }
+		
+		// ì „ì²´ì°½
 		 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	      setBounds(100, 100, 600, 600); // ÀüÃ¼ Ã¢ Å©±â
+	      setBounds(100, 100, 600, 400); // ì „ì²´ ì°½ í¬ê¸°
 	      contentPane = new JPanel();
-	      contentPane.setBackground(new Color(255, 238, 222));
+	      contentPane.setBackground(new Color(240, 240, 240));
 	      contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 	      setContentPane(contentPane);
 	      contentPane.setLayout(null);
 	      
-	      JLabel lblNewLabel = new JLabel("\uD30C\uC77C \uB2E4\uC6B4\uB85C\uB4DC \uCC3D");
-	      lblNewLabel.setForeground(new Color(100, 50, 0));
-	      lblNewLabel.setFont(new Font("±¼¸²", Font.BOLD, 40));
-	      lblNewLabel.setBounds(125, 10, 350, 60);
-	      contentPane.add(lblNewLabel);
+	      Choice choice = new Choice();
+
+	      choice.setBounds(33, 28, 524, 40);
+	      contentPane.add(choice);
+	      
 
 	      JLabel lbl_name = new JLabel("\uD30C\uC77C\uC774\uB984");
-	      lbl_name.setFont(new Font("±¼¸²", Font.PLAIN, 25));
-	      lbl_name.setForeground(new Color(100, 50, 0));
-	      lbl_name.setBounds(50, 250, 100, 40);
+	      lbl_name.setFont(new Font("êµ´ë¦¼", Font.PLAIN, 25));
+	      lbl_name.setForeground(new Color(0, 0, 0));
+	      lbl_name.setBounds(33, 160, 100, 40);
 	      contentPane.add(lbl_name);
 
 	      JLabel lbl_path = new JLabel("\uD30C\uC77C\uACBD\uB85C");
-	      lbl_path.setForeground(new Color(100, 50, 0));
-	      lbl_path.setFont(new Font("±¼¸²", Font.PLAIN, 25));
-	      lbl_path.setBounds(50, 350, 100, 40);
+	      lbl_path.setForeground(new Color(0, 0, 0));
+	      lbl_path.setFont(new Font("êµ´ë¦¼", Font.PLAIN, 25));
+	      lbl_path.setBounds(33, 210, 100, 40);
 	      contentPane.add(lbl_path);
 	      
 	      txt_name = new JTextField();
-	      txt_name.setBounds(200, 250, 350, 40);
+	      txt_name.setBounds(174, 164, 350, 40);
 	      contentPane.add(txt_name);
 	      txt_name.setColumns(10);
 	      
 	      txt_path = new JTextField();
-	      txt_path.setBounds(200, 350, 350, 40);
+	      txt_path.setBounds(174, 214, 350, 40);
 	      contentPane.add(txt_path);
 	      txt_path.setColumns(10);
-	      
-	   // fileList¸¦ ¼­¹ö¿¡°Ô ¿äÃ»ÇÑ´Ù
-	      String command = "findFileList";
-	      reqMap = new HashMap<Object, Object>();
-	      reqMap.put("command", command);
-	      reqMap.put("chatId", chatId);
-	      oos.writeObject(reqMap);
-	      oos.flush();
-			
-	    // fileList¸¦ º¸¿©ÁÜ - Àü¿ªº¯¼ö·Î
-//	      Choice choice = new Choice();
-//
 
-//	      choice.setBounds(50, 110, 500, 40);
-//	      contentPane.add(choice);
-	      
 	      
 	      addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
@@ -120,36 +122,63 @@ public class FileDownGui extends JFrame implements Runnable {
 				}
 			});
 	      
+	      
+	      
 	      JButton btnNewButton = new JButton("\uB2E4\uC6B4\uB85C\uB4DC");
-	      btnNewButton.setBackground(new Color(255, 130, 10));
-	      btnNewButton.setForeground(new Color(255, 255, 255));
-	      btnNewButton.setFont(new Font("±¼¸²", Font.PLAIN, 30));
+	      btnNewButton.setBackground(new Color(240, 240, 240));
+	      btnNewButton.setForeground(new Color(0, 0, 0));
+	      btnNewButton.setFont(new Font("êµ´ë¦¼", Font.PLAIN, 30));
 	      btnNewButton.addMouseListener(new MouseAdapter() {
 	         public void mouseClicked(MouseEvent e) {
 	            client_fname = txt_name.getText();
 	            client_path = txt_path.getText();
-//	            fdto = files.get(choice.getSelectedIndex()); // Å¬¶óÀÌ¾ğÆ®°¡ ¼±ÅÃÇÑ fileÀÇ dto
+	            fdto = files.get(choice.getSelectedIndex()); // í´ë¼ì´ì–¸íŠ¸ê°€ ì„ íƒí•œ fileì˜ dto
 	            
-	            // Å¬¶óÀÌ¾ğÆ®°¡ °í¸¥ file dto¸¦ multhread·Î º¸³¿
-	            reqMap = new HashMap<Object, Object>();
-				String command = "downFile";
-				reqMap.put("command",command);				
-				reqMap.put("fdto",fdto);
-				
-				try {
-					oos.writeObject(reqMap);
-					oos.flush();
-					
-				} catch (IOException e1) {}	
+	            
+	            if (client_path == null || client_fname == null) JOptionPane.showMessageDialog(null, "íŒŒì¼ê²½ë¡œì™€ ì´ë¦„ì„ ì…ë ¥í•´ ì£¼ì„¸ìš”", "ì•Œë¦¼ì°½", JOptionPane.ERROR_MESSAGE);
+	            else {
+					File file = new File(client_path);
+					File serf = new File(file, client_fname + ".txt");
+					if(!file.exists())	JOptionPane.showMessageDialog(null, "íŒŒì¼ê²½ë¡œë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤ \n ê²½ë¡œë¥¼ ë‹¤ì‹œ í™•ì¸í•´ ì£¼ì„¸ìš”", "ì•Œë¦¼ì°½", JOptionPane.ERROR_MESSAGE);				
+					else if(serf.exists()) {
+						String [] options = {"YES", "NO"};
+						int op = JOptionPane.showOptionDialog(null, "í•´ë‹¹ íŒŒì¼ì€ ì¡´ì¬í•˜ëŠ” íŒŒì¼ ì…ë‹ˆë‹¤ \n ì·¨ì†Œí•˜ì‹œë ¤ë©´ NO \n ê³„ì†í•˜ì‹œë ¤ë©´ YESë¥¼ ëˆŒë ¤ì£¼ì„¸ìš”", "ì•Œë¦¼ì°½", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "NO");
+						if(op == 0) {
+							// í´ë¼ì´ì–¸íŠ¸ê°€ ê³ ë¥¸ file dtoë¥¼ multhreadë¡œ ë³´ëƒ„
+				            reqMap = new HashMap<Object, Object>();
+							String command = "downFile";
+							reqMap.put("command",command);				
+							reqMap.put("fdto",fdto);
+							reqMap.put("reFile", op);
+							
+							try {
+								oos.writeObject(reqMap);
+								oos.flush();
+								
+							} catch (IOException e1) {}
+							JOptionPane.showMessageDialog(null, "ë‹¤ìš´ë¡œë“œê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤", "ì™„ë£Œì°½", JOptionPane.INFORMATION_MESSAGE);
+						}
+						else {
+							txt_name.setText("");
+							txt_path.setText("");
+						}
+					}
+					else {
+						reqMap = new HashMap<Object, Object>();
+						String command = "downFile";
+						reqMap.put("command",command);				
+						reqMap.put("fdto",fdto);
+						reqMap.put("reFile", 1);
+					}
+	            }
 				txt_name.setText("");
 				txt_path.setText("");
 	         }
 	      });
 	      
-	      btnNewButton.setBounds(210, 450, 180, 60);
+	      btnNewButton.setBounds(174, 293, 180, 60);
 	      contentPane.add(btnNewButton);
-	      
-	      
+
 	      
 	      addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
@@ -159,9 +188,9 @@ public class FileDownGui extends JFrame implements Runnable {
 			});
 	      Thread t1 = new Thread(this);
 			t1.start();
-	 } // gui Ã¢ end
+	 } // gui ì°½ end
 	
-	// ¼­¹ö·Î ºÎÅÍ ¿Â Á¤º¸¸¦ ¹Ş´Â °÷
+	// ì„œë²„ë¡œ ë¶€í„° ì˜¨ ì •ë³´ë¥¼ ë°›ëŠ” ê³³
 	public void run() {
 		try {
 			while (true) {
@@ -170,42 +199,52 @@ public class FileDownGui extends JFrame implements Runnable {
 					
 					switch (resCom) {
 					
-					case "downContent": // ¼­¹ö°¡ º¸³»¿Â ÆÄÀÏÀÇ ³»¿ëÀ» ¹Ş¾Æ¼­ Å¬¶óÀÌ¾ğÆ® pc¿¡ ÀÛ¼º
+					case "downContent": // ì„œë²„ê°€ ë³´ë‚´ì˜¨ íŒŒì¼ì˜ ë‚´ìš©ì„ ë°›ì•„ì„œ í´ë¼ì´ì–¸íŠ¸ pcì— ì‘ì„±
 						String content = (String) resMap.get("content");
-						String path = client_path + "/" + client_fname +".txt";
+						int op = (Integer) resMap.get("reFile");
 						PrintWriter pw = null;
-						try {
-							if (path != null) {
-								File file = new File(path);
-								if(!file.exists()) {
-									JOptionPane.showMessageDialog(null, "ÆÄÀÏ°æ·Î¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù \n °æ·Î¸¦ ´Ù½Ã È®ÀÎÇØ ÁÖ¼¼¿ä", "¾Ë¸²Ã¢", JOptionPane.ERROR_MESSAGE);
-									break;
-								}							
-								BufferedWriter bw = new BufferedWriter(new FileWriter(path, true));
-								pw = new PrintWriter(bw, true); // ÆÄÀÏ »ı¼º
-							}
-							pw.print(content);
-							pw.close();
-							JOptionPane.showMessageDialog(null, "´Ù¿î·Îµå°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù", "¿Ï·áÃ¢", JOptionPane.INFORMATION_MESSAGE);
-						} finally {}
+						File file = new File(client_path);
+						if (op == 1) {
+							try {
+								File file2 = new File(file, client_fname + ".txt");
+								if(!file2.exists())	file2.createNewFile();
+								FileWriter fw = new FileWriter(file2);
+								pw = new PrintWriter(fw, true); // ë®ì–´ì“°ì§€ ëª»í•œë‹¤
+								pw.print(content);
+								pw.close();
+							}finally {}
+						}
+						else {
+							try {
+								File file2 = new File(file, "re_" + client_fname + ".txt");
+								if(!file2.exists())	file2.createNewFile();
+								FileWriter fw = new FileWriter(file2);
+								pw = new PrintWriter(fw, true); // ë®ì–´ì“°ì§€ ëª»í•œë‹¤
+								pw.print(content);
+								pw.close();
+							}finally {}
+						}
 						call=false;
 						break;
 						
-					case "afterFindFileList": // Rcv·ÎºÎÅÍ fileList¸¦ ¹Ş¾Æ¿Â´Ù
+					case "afterFindFileList": // Rcvë¡œë¶€í„° fileListë¥¼ ë°›ì•„ì˜¨ë‹¤
 						
-						System.out.println("Frame after Find È£Ãâ");
-						files = new ArrayList<FileDTO>();
-						files = (List<FileDTO>)resMap.get("fileList");
-//					      for(int i=0; i<=files.size(); i++) {	
-//				    	  choice.add(files.get(i).getFileName());
-//				      }
+						List<FileDTO> fileList = (List<FileDTO>)resMap.get("fileList");
 						
-						if(files != null) System.out.println("ok");
-						else System.out.println("no");
+						System.out.println(fileList);
+						
+						this.files = fileList;
+					      for(int i=0; i<files.size(); i++) {	
+					    	  choice.add(files.get(i).getFileName());
+					      }
+						
+						
 						call=false;
 						break;
+						
+					
 					}
-				}else System.out.printf("");
+				}
 			}
 		} catch (Exception e) {}
 	}

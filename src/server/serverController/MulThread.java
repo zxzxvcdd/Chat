@@ -27,6 +27,8 @@ public class MulThread extends Thread {
 	List<ChatInfo> roomList;
 	EmpDTO emp;
 	List<EmpDTO> empList = null;
+	HashMap<Object, Object> reqMap;
+	HashMap<Object, Object> resMap;
 
 	public MulThread(Socket s1) {
 		try {
@@ -48,8 +50,8 @@ public class MulThread extends Thread {
 			
 			while (socket.isConnected()) {
 
-				HashMap<Object, Object> reqMap = null;
-				HashMap<Object, Object> resMap = new HashMap<Object, Object>();
+				reqMap = null;
+				resMap = new HashMap<Object, Object>();
 
 				try {
 					reqMap = (HashMap<Object, Object>) ois.readObject();
@@ -92,7 +94,7 @@ public class MulThread extends Thread {
 					System.out.println(reqMap.containsKey("emp"));
 					emp = (EmpDTO) reqMap.get("emp");
 					System.out.println(emp);
-					emp = service.loginEmployee(emp.getEmployeeId(), emp.getPw());
+					this.emp = service.loginEmployee(emp.getEmployeeId(), emp.getPw());
 
 					resMap.put("emp", emp);
 
@@ -157,45 +159,37 @@ public class MulThread extends Thread {
 
 					break;
 
-				case "findFileList": // service�� ���� filelist ��ü�� �޾� Rcv�� ����
-					int fchatId = (Integer) reqMap.get("chatId");
+				case "findFileList": // service로 부터 filelist 객체를 받아 Rcv로 보냄
+					int fchatId = (Integer)reqMap.get("chatId");
 					List<FileDTO> fileList = service.findFile(fchatId);
-					if (fileList != null)
-						System.out.println("multhread ok");
-					else
-						System.out.println("not ok");
-
-					resMap.put("command", "afterFindFileList");
+					resMap.put("command", "afterFindFileList"); 
 					resMap.put("fileList", fileList);
-
 					break;
 
-				case "downFile": // service�� �ش� ������ ã�Ƽ� ���� ������ �пͼ� Rcv�� ����
-					FileDTO fdto = (FileDTO) reqMap.get("fdto");
+				case "downFile": // service에 해당 파일을 찾아서 파일 내용을 읽와서 Rcv로 보냄
+					FileDTO fdto = new FileDTO(); 
+					fdto = (FileDTO)reqMap.get("fdto");
 					String dcontent = service.readFile(fdto);
+					int op = (Integer)reqMap.get("reFile");
 					resMap.put("command", "downContent");
 					resMap.put("content", dcontent);
+					resMap.put("reFile", op);
 					break;
+					
 
 				case "saveFile":
 					String fileName = (String) reqMap.get("fileName");
 					int schatId = (Integer) reqMap.get("chatId");
 					int employeeId = (Integer) reqMap.get("employeeId");
 					String scontent = (String) reqMap.get("content");
-					Boolean writeFilePath;
 					try {
 						boolean saveFile = service.SaveFile(employeeId, schatId, fileName);
-						if (!saveFile) {
-							resMap.put("command", "saveFileFail");
-							boolean alarm = true;
-							reqMap.put("alarm", alarm);
-						} else {
-							writeFilePath = service.writeFile(employeeId, schatId, fileName, scontent);
-							reqMap.put("writeFilePath", writeFilePath);
-						}
-					} catch (Exception e) {
-					}
+						if(!saveFile)	System.out.println("saveFile X");
+						else 	service.writeFile(employeeId, schatId, fileName, scontent); // true로 반환
+					} catch (Exception e) {}					
 					break;
+					
+					
 
 				case "readChat":
 
@@ -213,24 +207,34 @@ public class MulThread extends Thread {
 
 				case "sendChat":
 
+					
 					ChatInfo sendRoom = (ChatInfo) reqMap.get("room");
 
 					String sendString = (String) reqMap.get("chat");
 
-					String newChat = emp.getName() + ":\t" + sendString + "\n";
+					System.out.println(reqMap);
+					
+					String newChat = emp.getName() + ": " + sendString + "\n";
 
 					boolean sendResult = service.writeChat(sendRoom, newChat);
 
+		
+					
+					
 					resMap.put("chatId", sendRoom.getChatListDTO().getChatId());
 
 					if (sendResult) {
 
+						
 						String sendChat = service.readChat(sendRoom);
 
 						resMap.put("chat", sendChat);
 
 						List<MulThread> roomThreads = findChatThread(sendRoom, false);
 
+						
+						System.out.println(roomThreads);
+						
 						for (MulThread roomThread : roomThreads) {
 
 							roomThread.sendChat(resMap);
@@ -260,6 +264,7 @@ public class MulThread extends Thread {
 						List<EmpDTO> newUsers = (List<EmpDTO>) reqMap.get("newUsers");
 
 				
+						
 
 						if (chatName == null) {
 
@@ -297,12 +302,16 @@ public class MulThread extends Thread {
 						}
 
 				
+						
+						resMap = new HashMap<Object, Object>();
+						resMap.put("chatId", updateRoom.getChatListDTO().getChatId());
 						resMap.put("command", "afterCreateRoom");
 						resMap.put("CreateResult", "failUsers");
 						resMap.put("room", updateRoom);
 
 					} else {
 
+						
 						resMap = invite(updateRoom, newEmp);
 
 					}
@@ -347,9 +356,12 @@ public class MulThread extends Thread {
 
 	public void sendChat(HashMap<Object, Object> resMap) throws IOException {
 
+	
+		if(reqMap==null||!(reqMap.containsKey("newRoom"))) {
 		resMap.put("command", "send");
 		oos.writeObject(resMap);
 		oos.flush();
+		}
 
 	}
 
@@ -359,23 +371,33 @@ public class MulThread extends Thread {
 
 		HashMap<Object, Object> resMap = new HashMap<Object, Object>();
 
+		resMap.put("chatId", updateRoom.getChatListDTO().getChatId());
+
+		
 		if (updateRoom != null) {
 
 			List<MulThread> roomThreads = findChatThread(updateRoom, true);
 
+			boolean updateResult;
+			if(emp.getName().equals(newEmp.getName())) {
+			
+				updateResult=true;
+				
+			}else {
 			String updateString = emp.getName() + " " + emp.getJobTitle() + "님이 " + newEmp.getName() + " "
-					+ newEmp.getJobTitle() + "님을 초대하였습니다.";
+					+ newEmp.getJobTitle() + "님을 초대하였습니다.\n";
 
-			resMap.put("chatId", updateRoom.getChatListDTO().getChatId());
 
-			boolean updateResult = service.writeChat(updateRoom, updateString);
+			updateResult = service.writeChat(updateRoom, updateString);
 
+			}
 			if (updateResult) {
 
 				String sendChat = service.readChat(updateRoom);
 
 				resMap.put("chat", sendChat);
 
+				System.out.println("초대 출력");
 				for (MulThread roomThread : roomThreads) {
 
 					roomThread.sendChat(resMap);
@@ -393,7 +415,7 @@ public class MulThread extends Thread {
 
 			}
 
-		} else {
+		}else {
 
 			resMap.put("inviteResult", 0);
 			// 초대 실패
@@ -430,12 +452,14 @@ public class MulThread extends Thread {
 		int chatId = room.getChatListDTO().getChatId();
 		for (ChatUserDTO user : room.getChatUserDTO()) {
 
-			userIdList.add(user.getUserId());
+			userIdList.add(user.getEmployeeId());
 
 		}
-
+		
+		
 		for (MulThread mulThread : ServerController.threadList) {
 
+		
 			if (userIdList.contains(mulThread.getEmp().getEmployeeId())) {
 				// update 값 true일 시 room의 유저리스트 업데이트
 				if (update) {

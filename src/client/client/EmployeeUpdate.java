@@ -1,4 +1,4 @@
-	package client.client;
+package client.client;
 
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 
 import server.serverDTO.EmpDTO;
 
-public class EmployeeJoin extends JFrame implements Runnable {
+public class EmployeeUpdate extends JFrame implements Runnable{
 
 	private JPanel contentPane;
 	private JTextField employeeId_textField;
@@ -35,7 +35,7 @@ public class EmployeeJoin extends JFrame implements Runnable {
 	ObjectOutputStream oos;
 	HashMap<Object, Object> reqMap;
 	
-	public static boolean joinCall = false;
+	public static boolean call = false;
 	public static HashMap<Object, Object> resMap = null;
 
 	/**
@@ -58,14 +58,12 @@ public class EmployeeJoin extends JFrame implements Runnable {
 	 * Create the frame.
 	 * @throws ParseException 
 	 */
-	public EmployeeJoin(ObjectOutputStream oos) {
+	public EmployeeUpdate(ObjectOutputStream oos) {
 		
 		this.oos = oos;
 		reqMap = null;
 		
-
-		
-		setTitle("회원가입");
+		setTitle("정보수정");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 751, 740);
 		contentPane = new JPanel();
@@ -150,9 +148,9 @@ public class EmployeeJoin extends JFrame implements Runnable {
 		jobTitle_textField.setBounds(263, 510, 190, 36);
 		contentPane.add(jobTitle_textField);
 		
-		JButton join_Button = new JButton("회원가입");
-		join_Button.setBackground(UIManager.getColor("Button.light"));
-		join_Button.addMouseListener(new MouseAdapter() {
+		JButton bupdate_Button = new JButton("수정");
+		bupdate_Button.setBackground(UIManager.getColor("Button.light"));
+		bupdate_Button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
@@ -168,87 +166,77 @@ public class EmployeeJoin extends JFrame implements Runnable {
 				
 				// 	---- 그런다음 Pattern.matches()로 정규표현식과 입력 값을 
 				//비교 하고 boolean형으로 넘겨준다
-//				
-//				boolean id_pt = false;
-//				boolean pw_pt = false;
-//				boolean name_pt = false;
-//				boolean department_pt = false;
-//				boolean tel_pt = false;
-//				boolean title_pt = false;
-//				
-//				if(employeeId_textField.getText().isEmpty()) {}
-//				else {
+				
+				boolean id_pt;
+				boolean pw_pt;
+				boolean name_pt;
+				boolean department_pt;
+				boolean tel_pt;
+				boolean title_pt;
+				
 				employee_id = employeeId_textField.getText();
-//				id_pt = Pattern.matches("^[0-9]*$", employee_id);
-//				}
-//				
-//				if(pw_textField.getText().isEmpty()) {}
-//				else {
+				id_pt = Pattern.matches("^[0-9]*$", employee_id);	// 숫자만 가능합니다
+				
 				pw = pw_textField.getText();
-//				pw_pt = Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])"		//숫자,문자,특수문자 포함 8자 이상
-//						+ "[A-Za-z\\d$@$!%*#?&]{8,}$", pw);
-//				}
-//				
+				pw_pt = Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])"		//숫자,문자,특수문자 포함 8자 이상
+						+ "[A-Za-z\\d$@$!%*#?&]{8,}$", pw);
+				
 				pw_check = checkPw_textField.getText();
-//				
-//				if(name_textField.getText().isEmpty()) {}
-//				else {
+				
 				name = name_textField.getText();
-//				name_pt = Pattern.matches("^[가-힣]*$", name);		// 한글만 가능합니다
-//				}
-//				
-//				if(departmentId_textField.getText().isEmpty()) {}
-//				else {
+				name_pt = Pattern.matches("^[가-힣]*$", name);		// 한글만 가능합니다
+				
 				department_id = departmentId_textField.getText();
-//				department_pt = Pattern.matches("^[0-9]*$", department_id);
-//				}
-//				
-//				if(tel_textField.getText().isEmpty()) {}
-//				else {
+				department_pt = Pattern.matches("^[0-9]*$", department_id);
+				
 				tel = tel_textField.getText();
-//				tel_pt = Pattern.matches("^\\d{2,3}-\\d{3,4}-\\d{4}$"	//숫자랑 (-)하이픈 입력만 가능합니다
-//						, tel);
-//				}
-//				
-//				if(jobTitle_textField.getText().isEmpty()) {}
-//				else {
+				tel_pt = Pattern.matches("^\\d{2,3}-\\d{3,4}-\\d{4}$"	//숫자랑 (-)하이픈 입력만 가능합니다
+						, tel);
+				
 				job_title = jobTitle_textField.getText();
-// 				title_pt = Pattern.matches("^[가-힣]*$", job_title);		//한글만 가능합니다
-//				}
-// 				//---------졍규표현식과 비교 후 false이면 에러 메시지 창 호출
-// 				
-// 				if(id_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "아이디를 확인해주세요(사원번호만 가능합니다"
-// 							, "ID ERROR", JOptionPane.ERROR_MESSAGE);
-// 				}else if(pw_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "비밀번호를 확인해 주세요 숫자, 문자, 특수문자 포함 8자이상",
-// 					"Password ERROE", JOptionPane.ERROR_MESSAGE);
-// 				}else if(!pw_check.equals(pw) ) {
-// 					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다",
-// 							"Password Check ERROR",JOptionPane.ERROR_MESSAGE);
-// 				}else if(name_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "이름을 확인해주세요(한글만 가능합니다)",
-// 							"Name ERROE",JOptionPane.ERROR_MESSAGE);
-// 				}else if(department_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "부서번호를 확인해주세요(부서번호만 입력해주세요)",
-// 							"Departmnet ID ERROR",JOptionPane.ERROR_MESSAGE);
-// 				}else if(tel_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "전화번호를 확인해주세요(전화번호만 입력해주세요)",
-// 							"Phone Number ERROR",JOptionPane.ERROR_MESSAGE);
-//				}else if(title_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "직책을 확인해주세요(한글만 가능합니다)",
-// 							"Job Title ERROR",JOptionPane.ERROR_MESSAGE);
-// 				}else { // ------
+ 				title_pt = Pattern.matches("^[가-힣]*$", job_title);		//한글만 가능합니다
+ 				
+ 				//---------졍규표현식과 비교 후 false이면 에러 메시지 창 호출
+ 				
+ 				if(id_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "아이디를 확인해주세요(사원번호만 가능합니다"
+ 							, "ID ERROR", JOptionPane.ERROR_MESSAGE);
+ 				}else if(pw_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "비밀번호를 확인해 주세요 숫자, 문자, 특수문자 포함 8자이상",
+ 					"Password ERROE", JOptionPane.ERROR_MESSAGE);
+ 				}else if(!pw_check.equals(pw) ) {
+ 					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다",
+ 							"Password Check ERROR",JOptionPane.ERROR_MESSAGE);
+ 				}else if(name_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "한글만 가능합니다",
+ 							"Name ERROE",JOptionPane.ERROR_MESSAGE);
+ 				}else if(department_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "부서번호만 입력해주세요",
+ 							"Departmnet ID ERROR",JOptionPane.ERROR_MESSAGE);
+ 				}else if(tel_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "전화번호만 입력해주세요",
+ 							"Phone Number ERROR",JOptionPane.ERROR_MESSAGE);
+				}else if(title_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "한글만 가능합니다",
+ 							"Job Title ERROR",JOptionPane.ERROR_MESSAGE);
+ 				}else { // ------
  					
  					int id = Integer.parseInt(employee_id);
  					int d_id = Integer.parseInt(department_id);
  					
- 					String command = "join";
+ 					String command = "update";
  					
  					reqMap = new HashMap<Object, Object>();
  					reqMap.put("command", command);
  					
- 					EmpDTO empdto = new EmpDTO(id, pw, name, d_id, tel, null, job_title ); //값을 EmpDTO로 넘긴다
+ 					EmpDTO empdto = new EmpDTO();
+ 					empdto.setPw(pw);
+ 					empdto.setName(name);
+ 					empdto.setDepartmentId(d_id); 		
+ 					empdto.setTel(tel);
+ 					empdto.setJobTitle(job_title);
+ 					empdto.setEmployeeId(id);
+ 					
  					reqMap.put("emp", empdto);
  					
  					try {
@@ -258,81 +246,59 @@ public class EmployeeJoin extends JFrame implements Runnable {
 						// TODO: handle exception
 					}
  					
-// 					ClientMain cm = new ClientMain();	//ClientMain 객체를 생성한다
-// 					String s = cm.check_Join(empdto);
  					
- 					
- 					
-// 				}
+ 				}
  				
  				
 				
 			}
 		});
-		join_Button.setFont(new Font("굴림", Font.BOLD, 18));
-		join_Button.setBounds(270, 610, 208, 70);
-		contentPane.add(join_Button);
+		bupdate_Button.setFont(new Font("굴림", Font.BOLD, 18));
+		bupdate_Button.setBounds(270, 610, 208, 70);
+		contentPane.add(bupdate_Button);
 		
 		Thread t1 = new Thread(this);
 		t1.start();
 		
 	}
 	
-	@Override
 	public void run() {
 		
 		try {
+			
 			while(true) {
 				
-				if(joinCall) {
-					
-					
-					if(resMap != null) {
+				if(call) {
 
-						boolean result = (boolean) resMap.get("joinResult");
+						boolean result = (boolean) resMap.get("updateResult");
 						
 						if(result) { 
-							  //------위 작업이 끝나면 회원가입 창을 닫고 로그인창을 띄운다 dispose();
-						  dispose();
+							  
 						  setVisible(false); 
-						  JOptionPane.showMessageDialog(null, "회원가입 완료!", null,
+						  JOptionPane.showMessageDialog(null, "정보수정 완료!", null,
 						  JOptionPane.PLAIN_MESSAGE);
-						  
-						  new Login(oos).setVisible(true); 
+						  //메인화면 띄움
 						  
 						  }else {
-							  JOptionPane.showMessageDialog(null, "회원가입 실패!", null,
+							  JOptionPane.showMessageDialog(null, "정보수정 실패!", null,
 									  JOptionPane.ERROR_MESSAGE);
 						  }
 						
-						joinCall=false;
-					}
+						call = false;
 						
 						
 				}else System.out.printf("");
-					
 				
-				
-				}
+			}
 			
-	
+		
+			
 		}catch (Exception e) {
 			// TODO: handle exception
 		}
+		
 	}
+	
 }
-
-	
-		
-		
-		
 		
 	
-	
-
-	
-	
-	
-	
-	
-

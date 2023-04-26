@@ -39,7 +39,7 @@ public class RcvThread extends Thread {
 
 					case "afterJoin":
 						EmployeeJoin.resMap = resMap;
-						EmployeeJoin.call = true;
+						EmployeeJoin.joinCall = true;
 
 						break;
 
@@ -79,8 +79,8 @@ public class RcvThread extends Thread {
 						break;
 
 					case "afterFindFileList": // ������ ���� �� fileList�� down gui���� ����
-						FileDownGui.call = true;
-						FileDownGui.resMap = resMap;
+						FileDownGUIPlus.call = true;
+						FileDownGUIPlus.resMap = resMap;
 						if (resMap == null)
 							System.out.println("yes");
 						else
@@ -88,18 +88,20 @@ public class RcvThread extends Thread {
 						break;
 
 					case "downContent": // �����κ��� �� file������ downgui���� ����
-						FileDownGui.call = true;
-						FileDownGui.resMap = resMap;
+						FileDownGUIPlus.call = true;
+						FileDownGUIPlus.resMap = resMap;
 						break;
 
 					case "saveFileFail":
-						FileUpGui.call = true;
-						FileUpGui.resMap = resMap;
+						FileUpGUI.call = true;
+						FileUpGUI.resMap = resMap;
 						break;
 
 					case "afterReadChat":
+					
 						for (ChatGUI chat : ChatClient.chatList) {
 
+							
 							int rcvId = (Integer) resMap.get("chatId");
 
 							if (chat.getRoom().getChatListDTO().getChatId() == rcvId) {
@@ -137,8 +139,13 @@ public class RcvThread extends Thread {
 						
 					case "send":
 						int senIndex =0;
+						
+		
+						if(ChatClient.chatList.size()!=0) {
+							System.out.println(1);
 						for (ChatGUI chat : ChatClient.chatList) {
-							
+							System.out.println(2);
+								
 							int rcvId = (Integer) resMap.get("chatId");
 							if (chat.getRoom().getChatListDTO().getChatId() == rcvId) {
 
@@ -147,20 +154,27 @@ public class RcvThread extends Thread {
 								break;
 
 							}
+							
 							if(ChatClient.chatList.size()== senIndex) {
 								
 								
 								//채팅방이 켜져있지 않을 시
 								
 								
-								
+								break;
 							}
 
 							senIndex++;
 						}
 						
-						tk1.beep();
+//						tk1.beep();
 						
+						}else {
+							
+							
+							break;
+						}
+
 						break;
 						
 					case "updateRoom":

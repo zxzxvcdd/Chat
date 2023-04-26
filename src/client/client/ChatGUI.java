@@ -10,9 +10,7 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,48 +18,20 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import server.serverDTO.ChatInfo;
-import server.serverDTO.ChatListDTO;
 import server.serverDTO.ChatUserDTO;
 import server.serverDTO.EmpDTO;
 
 public class ChatGUI extends JFrame implements Runnable, ActionListener {
-	/*
-	 * 
-	 * 
-	 * 
-	 * ÀÔÀåÇÏ±â event
-	 * 
-	 * chatList.add(new chatGUI(oos, ChatInfo, emp));
-	 * 
-	 * 
-	 * -»ı¼ºÀÚ ChatInfo °´Ã¼·Î ¹æÀÌ¸§, Âü¿©ÀÚ Ãâ·Â ¼­¹ö·Î Ã¤ÆÃ³»¿ë ¿äÃ» (ChatInfo,EmpId) ¼­¹ö¿¡¼­ chatPath¸¦
-	 * ÀÌ¿ëÇØ¼­ ÆÄÀÏÀ» Ã£¾Æ client·Î Àü¼Û(ÆÄÀÏ,chatId)
-	 * 
-	 * rcvTread¿¡¼­ ¹Ş°í, static chatList¿¡¼­ chatId·Î ÇöÀç ¿­·ÁÀÖ´Â Ã¤ÆÃ¹æ °´Ã¼¸¦ Ã£¾Æ¼­ textarea Ãâ·Â ¸¸¾à
-	 * ¿­·ÁÀÖ´Â Ã¤ÆÃ¹æ °´Ã¼°¡ ¾ø´Ù¸é ºñÇÁÀ½°ú ¸ŞÀÎÃ¢ÀÇ Ã¤ÆÃ¹æ ¸ñ·Ï¿¡¼­ ÇØ´ç ¿­ÀÇ »ö±òÀ» º¯°æ
-	 * 
-	 * 
-	 * 
-	 * 
-	 * -Àü¼Û ÀÌº¥Æ® ÀÔ·ÂÃ¢ÀÇ String°ú chatId,empId ¼­¹ö·Î Àü´Ş ¼­¹ö¿¡¼­ Ã¤ÆÃ¹æ ÆÄÀÏ¿¡ StringÀ» ¾÷µ¥ÀÌÆ®ÇÏ°í
-	 * findChatThread¸Ş¼Òµå·Î Ã¤ÆÃ¹æ¿¡ µé¾î°¡ÀÖ´Â »ç¿ëÀÚ¸¦ ¸ğµÎ Ã£¾Æ send ¸Ş¼Òµå ½ÇÇà
-	 * 
-	 * 
-	 * 
-	 * 
-	 * -ÆÄÀÏ ´Ù¿î ÀÌº¥Æ® ÆÄÀÏ ´Ù¿îÃ¢ È£Ãâ
-	 * 
-	 * 
-	 */
+
 	private InputStream inputStream;
 	private OutputStream outputStream;
 	private DataOutputStream dataOutputStream;
@@ -76,24 +46,21 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 	// Ã¢
 	private JPanel contentPane;
 
-	// Ã¤ÆÃ
-	private JTextArea chatName; // ¹æÀÌ¸§
-	private JButton fileSendBT; // ÆÄÀÏ ¾÷·Îµå
-	private JTextArea chatInput; // Text Ãâ·Â
-	private JButton chatSendBT; // ÀÔ·Â¹ŞÀº text º¸³»´Â ¹öÆ°
-	private JTextArea chatOutput; // ÀÔ·Â
-	// Á¢¼ÓÀÚ
+	// Ã¤ï¿½ï¿½
+	private JTextArea chatName; // ï¿½ï¿½ï¿½Ì¸ï¿½
+	private JButton fileSendBT; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Îµï¿½
+	private JTextArea chatInput; // Text ï¿½ï¿½ï¿½
+	private JButton chatSendBT; // ï¿½Ô·Â¹ï¿½ï¿½ï¿½ text ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
+	private JTextField chatOutput; // ï¿½Ô·ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	private JLabel userLabel;
 	private JTextArea userList;
 	private JButton fileDownBT;
 
-	
-	
-	private String[] empTabNames = { "id","ÀÌ¸§" };
+	private String[] empTabNames = { "id", "ì´ë¦„" };
 	private DefaultTableModel empModel = new DefaultTableModel(empTabNames, 0);
 	private JTable empTable;
-	
-	
+
 	private JScrollPane userScrollPane;
 	private JScrollPane outputScrollPane;
 	private JScrollPane inputScrollPane;
@@ -111,18 +78,17 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 		this.oos = oos;
 		this.room = room;
 		this.myEmp = emp;
-		
 
+		ChatClient.chatList.add(this);
 
 		reqMap = new HashMap<Object, Object>();
 		String names = "";
 
-		String roomName ="";
+		String roomName = "";
 		roomName = room.getChatListDTO().getChatName();
 
 		setTitle(roomName);
-		
-		
+
 		for (ChatUserDTO user : room.getChatUserDTO()) {
 
 			names += user.getName() + "\n";
@@ -132,13 +98,11 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 		//
 		for (ChatUserDTO user : room.getChatUserDTO()) {
 
-			empModel.addRow(new Object[] { user.getEmployeeId(), user.getName()});
+			empModel.addRow(new Object[] { user.getEmployeeId(), user.getName() });
 
 		}
 
-		
-		
-		//// »ı¼º½Ã ¿äÃ»
+		//// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
 
 		reqMap.put("command", "readChat");
 		reqMap.put("room", room);
@@ -167,11 +131,15 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
+				reqMap = new HashMap<Object, Object>();
 				reqMap.put("command", "sendChat");
 				reqMap.put("room", room);
+
 				String sendChat = chatOutput.getText();
+				System.out.println(sendChat);
 				reqMap.put("chat", sendChat);
- 
+				chatOutput.setText("");
+
 				try {
 
 					oos.writeObject(reqMap);
@@ -192,18 +160,11 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 		chatSendBT.setBounds(535, 468, 97, 83);
 		contentPane.add(chatSendBT);
 
-		fileSendBT = new JButton("\uD30C\uC77C\uC5C5\uB85C\uB4DC");
-		fileSendBT.setFont(new Font("±¼¸²", Font.PLAIN, 16));
-		fileSendBT.setIcon(new ImageIcon(ChatGUI.class.getResource("/client/icon/plus.png")));
-		fileSendBT.setBounds(12, 468, 119, 83);
-		contentPane.add(fileSendBT);
-
 		chatInput = new JTextArea();
-		chatInput.setFont(new Font("±¼¸²", Font.PLAIN, 12));
+		chatInput.setFont(new Font("ï¿½ï¿½ï¿½ï¿½", Font.PLAIN, 12));
 		chatInput.setBounds(143, 56, 487, 402);
 		chatInput.setColumns(10);
 		chatInput.setEditable(false);
-
 
 		inputScrollPane = new JScrollPane(chatInput);
 		inputScrollPane.setBounds(143, 56, 487, 402);
@@ -214,62 +175,78 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 		outputScrollPane.setBounds(143, 468, 393, 83);
 		contentPane.add(outputScrollPane);
 
-		JTextArea chatOutput = new JTextArea();
-		outputScrollPane.setViewportView(chatOutput);
-		
-
-		chatOutput = new JTextArea();
+		chatOutput = new JTextField();
 		chatOutput.setBounds(143, 468, 393, 83);
-
-
+		outputScrollPane.setViewportView(chatOutput);
 
 		userLabel = new JLabel(" \uCC44\uD305 \uCC38\uC5EC\uC790");
-		userLabel.setFont(new Font("±¼¸²", Font.PLAIN, 20));
+		userLabel.setFont(new Font("ï¿½ï¿½ï¿½ï¿½", Font.PLAIN, 20));
 		userLabel.setBounds(12, 50, 119, 32);
 		contentPane.add(userLabel);
-
-		
-	
 
 		empTable = new JTable(empModel);
 		empTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
-
-				}
-			});
+			}
+		});
 
 		empTable.getColumn("id").setWidth(0);
 		empTable.getColumn("id").setMaxWidth(0);
 		empTable.getColumn("id").setMinWidth(0);
 		empTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-		userScrollPane= new JScrollPane(empTable);
+		userScrollPane = new JScrollPane(empTable);
 		userScrollPane.setBounds(12, 92, 119, 282);
 		contentPane.add(userScrollPane);
-	
+
+		fileSendBT = new JButton("");
+		fileSendBT.setFont(new Font("ï¿½ï¿½ï¿½ï¿½", Font.PLAIN, 16));
+		fileSendBT.setIcon(new ImageIcon(ChatGUI.class.getResource("/client/icon/plus.png")));
+		fileSendBT.setBounds(12, 468, 119, 83);
+		contentPane.add(fileSendBT);
+
+		fileSendBT.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+
+				try {
+					new FileUpGUI(oos, emp.getEmployeeId(), room.getChatListDTO().getChatId());
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+
+		});
 
 		fileDownBT = new JButton("\uD30C\uC77C\uB2E4\uC6B4");
-		fileDownBT.setFont(new Font("±¼¸²", Font.PLAIN, 16));
+		fileDownBT.setFont(new Font("ï¿½ï¿½ï¿½ï¿½", Font.PLAIN, 16));
 		fileDownBT.setBounds(12, 390, 119, 68);
 		contentPane.add(fileDownBT);
-		
 
+		fileDownBT.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				
+				try {
+					new FileDownGUIPlus(oos, room.getChatListDTO().getChatId());
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
 
 		setVisible(true);
 
 		Thread t1 = new Thread(this);
 		t1.start();
-
-	}
-
-	public void SetRoom(String roomName, String users, String chat) {
-
-		chatName.setText(roomName);
-		userList.setText(users);
-
-		chatInput.setText(chat);
 
 	}
 
@@ -294,7 +271,9 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 
 					case "afterReadChat":
 
-						chatInput.setText((String) resMap.get("chat"));
+						String firstChat = (String) resMap.get("chat");
+
+						chatInput.setText(firstChat);
 
 						int kkeut = chatInput.getText().length();
 						chatInput.setCaretPosition(kkeut);
@@ -305,7 +284,7 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 
 					case "afterSendChat":
 
-						JOptionPane.showMessageDialog(null, "Àü¼Û½ÇÆĞ", "Message", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "ì „ì†¡ì‹¤íŒ¨", "Message", JOptionPane.ERROR_MESSAGE);
 
 						call = false;
 
@@ -313,9 +292,8 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 
 					case "afterInvite":
 
-						JOptionPane.showMessageDialog(null, "ÃÊ´ë½ÇÆĞ", "Message", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "ì´ˆëŒ€ì‹¤íŒ¨", "Message", JOptionPane.ERROR_MESSAGE);
 
-						
 						call = false;
 
 						break;
@@ -330,11 +308,10 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 
 					case "updateRoom":
 
-						room = (ChatInfo) resMap.get("roomList"); 
+						room = (ChatInfo) resMap.get("roomList");
 
 						call = false;
 
-						
 						break;
 
 					}

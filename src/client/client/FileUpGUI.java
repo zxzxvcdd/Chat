@@ -1,50 +1,35 @@
 package client.client;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.HeadlessException;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.util.HashMap;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import server.serverService.ChatService;
-
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 // 
-public class FileUpGui extends JFrame implements Runnable {
-
-
-	static boolean call = false;
+public class FileUpGUI extends JFrame implements Runnable {
+	public static boolean call = false;
 	private JPanel contentPane;
 	private JTextField txt_name;
 	private JTextField txt_path;
-	HashMap<Object, Object> reqMap; // Å¬¶óÀÌ¾ğÆ®°¡ º¸³¿
-	static HashMap<Object, Object> resMap; // Å¬¶óÀÌ¾ğÆ®°¡ ¹ŞÀ½
+	HashMap<Object, Object> reqMap; // í´ë¼ì´ì–¸íŠ¸ê°€ ë³´ëƒ„
+	public static HashMap<Object, Object> resMap; // í´ë¼ì´ì–¸íŠ¸ê°€ ë°›ìŒ
 	String file_name;
 	String file_path;
 	String client_path;
@@ -53,15 +38,16 @@ public class FileUpGui extends JFrame implements Runnable {
 
 	/**
 	 * Launch the application.
-	 */
-		
-	public FileUpGui(ObjectOutputStream oos, int employeeId, int chatId) throws Exception { 
+	 */	
+	
+	
+	public FileUpGUI(ObjectOutputStream oos, int employeeId, int chatId) throws Exception { 
 		this.oos = oos;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	      setBounds(100, 100, 600, 400); // ÀüÃ¼ Ã¢ Å©±â
+	      setBounds(100, 100, 600, 400); // ì „ì²´ ì°½ í¬ê¸°
 	      contentPane = new JPanel();
-	      contentPane.setBackground(new Color(255, 238, 222));
+	      contentPane.setBackground(new Color(240, 240, 240));
 	      contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 	      setContentPane(contentPane);
@@ -69,19 +55,19 @@ public class FileUpGui extends JFrame implements Runnable {
 	      
 	      JLabel lblNewLabel = new JLabel("\uD30C\uC77C \uC5C5\uB85C\uB4DC \uCC3D");
 	      lblNewLabel.setForeground(new Color(100, 50, 0));
-	      lblNewLabel.setFont(new Font("±¼¸²", Font.BOLD, 41));
+	      lblNewLabel.setFont(new Font("êµ´ë¦¼", Font.BOLD, 41));
 	      lblNewLabel.setBounds(150, 10, 285, 60);
 	      contentPane.add(lblNewLabel);
 
 	      JLabel lbl_name = new JLabel("\uD30C\uC77C\uC774\uB984");
 	      lbl_name.setForeground(new Color(100, 50, 0));
-	      lbl_name.setFont(new Font("±¼¸²", Font.PLAIN, 25));
+	      lbl_name.setFont(new Font("êµ´ë¦¼", Font.PLAIN, 25));
 	      lbl_name.setBounds(50, 100, 100, 40);
 	      contentPane.add(lbl_name);
 
 	      JLabel lbl_path = new JLabel("\uD30C\uC77C\uACBD\uB85C");
 	      lbl_path.setForeground(new Color(100, 50, 0));
-	      lbl_path.setFont(new Font("±¼¸²", Font.PLAIN, 25));
+	      lbl_path.setFont(new Font("êµ´ë¦¼", Font.PLAIN, 25));
 	      lbl_path.setBounds(50, 200, 100, 40);
 	      contentPane.add(lbl_path);
 	      
@@ -95,6 +81,14 @@ public class FileUpGui extends JFrame implements Runnable {
 	      contentPane.add(txt_path);
 	      txt_path.setColumns(10);
 		
+		    
+
+		
+		
+		
+		
+		
+		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				dispose();
@@ -103,41 +97,45 @@ public class FileUpGui extends JFrame implements Runnable {
 		});
 		
 		JButton btn_upload = new JButton("\uC5C5\uB85C\uB4DC");
-		btn_upload.setBackground(new Color(255, 130, 10));
+		btn_upload.setBackground(new Color(240, 240, 240));
 		btn_upload.setForeground(new Color(255, 255, 255));
-		btn_upload.setFont(new Font("±¼¸²", Font.PLAIN, 30));
+		btn_upload.setFont(new Font("êµ´ë¦¼", Font.PLAIN, 30));
 		btn_upload.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				client_fname = txt_name.getText();
 	            client_path = txt_path.getText();
-				String path = client_path + "/" + client_fname +".txt";
-				File file = new File(path);
+				String path = client_path + "/" + client_fname +".txt";		
 				String content = "";
-				if(!file.exists()) JOptionPane.showMessageDialog(null, "ÆÄÀÏ°æ·Î¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù \n °æ·Î¸¦ ´Ù½Ã È®ÀÎÇØ ÁÖ¼¼¿ä", "¾Ë¸²Ã¢", JOptionPane.ERROR_MESSAGE);
-				FileReader fr;
-				try {
-					fr = new FileReader(file);
-					BufferedReader br = new BufferedReader(fr);
-					String line = "";
-					
-					while((line = br.readLine()) != null)	content += (line +"\n");
-					br.close();
-				} catch (FileNotFoundException e2) {} 
-				  catch (IOException e1) {}			
-				reqMap = new HashMap<Object, Object>();
-				String command = "saveFile";
-				reqMap.put("command",command);
-				reqMap.put("fileName",client_fname);
-				reqMap.put("chatId",chatId);
-				reqMap.put("employeeId",employeeId);
-				reqMap.put("content",content);
-				
-				try {
-					oos.writeObject(reqMap);
-					oos.flush();
-					
-				} catch (IOException e1) {}	
-								
+				if(client_fname == "" || client_path == "") JOptionPane.showMessageDialog(null, "íŒŒì¼ê²½ë¡œì™€ ì´ë¦„ì„ ì…ë ¥í•´ ì£¼ì„¸ìš”", "ì•Œë¦¼ì°½", JOptionPane.ERROR_MESSAGE);
+				else {
+					File file = new File(path);
+					if(!file.exists()) JOptionPane.showMessageDialog(null, "íŒŒì¼ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤ \n íŒŒì¼ ì´ë¦„ì´ë‚˜ ê²½ë¡œë¥¼ ë‹¤ì‹œ í™•ì¸í•´ ì£¼ì„¸ìš”", "ì•Œë¦¼ì°½", JOptionPane.ERROR_MESSAGE);				
+					else {
+						try {
+							FileReader fr= new FileReader(file);
+							BufferedReader br = new BufferedReader(fr);
+							String line = "";
+							
+							while((line = br.readLine()) != null)	content += (line +"\n");
+							br.close();
+						} catch (FileNotFoundException e2) {} 
+						  catch (IOException e1) {}			
+						reqMap = new HashMap<Object, Object>();
+						String command = "saveFile";
+						reqMap.put("command",command);
+						reqMap.put("fileName",client_fname);
+						reqMap.put("chatId",chatId);
+						reqMap.put("employeeId",employeeId);
+						reqMap.put("content",content);
+						
+						try {
+							oos.writeObject(reqMap);
+							oos.flush();
+							
+						} catch (IOException e1) {}	
+						JOptionPane.showMessageDialog(null, "ì—…ë¡œë“œê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤", "ì™„ë£Œì°½", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
 				txt_name.setText("");
 				txt_path.setText("");
 			}
@@ -155,6 +153,7 @@ public class FileUpGui extends JFrame implements Runnable {
 		t1.start();
 	}
 	
+	@Override
 	public void run() {
 		try {
 			while (true) {
@@ -163,19 +162,9 @@ public class FileUpGui extends JFrame implements Runnable {
 					
 					switch (resCom) {
 					
-					case "alram" :
-						boolean alarm = (boolean)resMap.get("alarm");
-						if(alarm)	JOptionPane.showMessageDialog(null, "ÆÄÀÏ ¾÷·Îµå¿¡ ½ÇÆĞÇÏ¿´½À´Ï´Ù", "¾Ë¸²Ã¢", JOptionPane.ERROR_MESSAGE);			
-						call=false;
-						break;
-						
-					case "writeFilePath":
-						boolean writeFilePath = (boolean)resMap.get("writeFilePath");
-						if(!writeFilePath) JOptionPane.showMessageDialog(null, "ÆÄÀÏ ¾÷·Îµå¿¡ ½ÇÆĞÇÏ¿´½À´Ï´Ù", "¾Ë¸²Ã¢", JOptionPane.ERROR_MESSAGE);
-						else	JOptionPane.showMessageDialog(null, "´Ù¿î·Îµå°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù", "¿Ï·áÃ¢", JOptionPane.INFORMATION_MESSAGE);
-						break;
+					
 					}
-				}System.out.print("");
+				}
 			}
 		} finally {}
 	}

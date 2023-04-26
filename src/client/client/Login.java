@@ -11,28 +11,31 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import server.serverDTO.EmpDTO;
 
-
-
 public class Login extends JFrame implements Runnable {
 
 	private JPanel contentPane;
 	private JTextField id_textField;
-	private JTextField pw_textField;
 	
-	EmpDTO emp = new EmpDTO();
-
 	ObjectOutputStream oos;
-
-	HashMap<Object, Object> reqMap;
-
+	
+	HashMap<Object,Object> reqMap;
+	
+	
+	
 	public static boolean call = false;
-	public static HashMap<Object, Object> resMap = null;
+	public static HashMap<Object,Object> resMap =null;
+	private JPasswordField pw_textField;
+	private EmpDTO emp;
+	
+	
+	
 
 	/**
 	 * Launch the application.
@@ -54,12 +57,15 @@ public class Login extends JFrame implements Runnable {
 	 * Create the frame.
 	 */
 	public Login(ObjectOutputStream oos) {
-
-		this.oos = oos;
-
-		reqMap = null;
-
-		setTitle("·Î±×ÀÎ");
+		
+		
+		
+		this.oos =oos;
+		
+		reqMap= null;
+		
+		
+		setTitle("ë¡œê·¸ì¸");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 755, 729);
 		contentPane = new JPanel();
@@ -68,168 +74,194 @@ public class Login extends JFrame implements Runnable {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		JLabel login_lbl = new JLabel("·Î±×ÀÎ");
-		login_lbl.setHorizontalAlignment(JLabel.CENTER); // "ë¡œê·¸?¸"?„ ì¤‘ì•™?œ¼ë¡? ?˜®ê¹?
-//		login_lbl.setFont(new Font("êµ´ë¦¼", Font.BOLD | Font.ITALIC, 25));
+		
+		JLabel login_lbl = new JLabel("ë¡œê·¸ì¸");
+		login_lbl.setHorizontalAlignment(JLabel.CENTER);		//"ë¡œê·¸ì¸"ì„ ì¤‘ì•™ìœ¼ë¡œ ì˜®ê¹€
+		login_lbl.setFont(new Font("êµ´ë¦¼", Font.BOLD | Font.ITALIC, 25));
 		login_lbl.setBounds(238, 25, 267, 63);
 		contentPane.add(login_lbl);
-
+		
 		id_textField = new JTextField();
 		id_textField.setBounds(208, 157, 333, 63);
 		contentPane.add(id_textField);
 		id_textField.setColumns(10);
-
-		JLabel id_lbl = new JLabel("¾ÆÀÌµğ");
-		id_lbl.setFont(new Font("±¼¸²", Font.PLAIN, 12));
+		
+		JLabel id_lbl = new JLabel("ì•„ì´ë””");
 		id_lbl.setHorizontalAlignment(JLabel.CENTER);
-		id_lbl.setFont(new Font("±¼¸²", Font.BOLD, 17));
+		id_lbl.setFont(new Font("êµ´ë¦¼", Font.BOLD, 17));
 		id_lbl.setBounds(286, 242, 163, 41);
 		contentPane.add(id_lbl);
-
-		pw_textField = new JTextField();
-		pw_textField.setColumns(10);
-		pw_textField.setBounds(208, 315, 333, 63);
+		
+		pw_textField = new JPasswordField();
+		pw_textField.setBounds(211, 300, 330, 69);
 		contentPane.add(pw_textField);
-
-		JLabel pw_lbl = new JLabel("ºñ¹Ğ¹øÈ£");
+		
+		JLabel pw_lbl = new JLabel("ë¹„ë°€ë²ˆí˜¸");
 		pw_lbl.setHorizontalAlignment(JLabel.CENTER);
-		pw_lbl.setFont(new Font("±¼¸²", Font.BOLD, 17));
-		pw_lbl.setBounds(286, 415, 163, 41);
+		pw_lbl.setFont(new Font("êµ´ë¦¼", Font.BOLD, 17));
+		pw_lbl.setBounds(286, 407, 163, 41);
 		contentPane.add(pw_lbl);
-
-		JButton btnNewButton = new JButton("·Î±×ÀÎ");
-		btnNewButton.addMouseListener(new MouseAdapter() {
+		
+		JButton login_Button = new JButton("ë¡œê·¸ì¸");
+		login_Button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
-				System.out.println("·Î±×ÀÎÀÌº¥Æ®");
+				
+				
+				System.out.println("ë¡œê·¸ì¸ì´ë²¤íŠ¸");
 				int id = Integer.parseInt(id_textField.getText());
 				String pw = pw_textField.getText();
-				System.out.println(id + pw);
-
-				String command = "login";
-
-				reqMap = new HashMap<Object, Object>();
-
-				reqMap.put("command", command);
-
+				System.out.println(id+pw);
+			
 				
+				String command = "login";
+				
+
+				reqMap = new HashMap<Object,Object>();
+				
+				reqMap.put("command", command);
+				
+				EmpDTO emp = new EmpDTO();
 				emp.setEmployeeId(id);
 				emp.setPw(pw);
-
+				
+				
 				reqMap.put("emp", emp);
-
+				
 				try {
 					oos.writeObject(reqMap);
 					oos.flush();
-				} catch (Exception e1) {
-
+				}catch(Exception e1) {
+					
 				}
-
-				// ClientMain cm = new ClientMain();
-
-				// ë¡œê·¸?¸ ?šŸ?ˆ˜? œ?•œ ê¸°ëŠ¥ êµ¬í˜„ ?•„ì§? ?•ˆ?¨
+				
+				
+				
+				
+				//ClientMain cm = new ClientMain();
+				
+				
+				 // ë¡œê·¸ì¸ íšŸìˆ˜ì œí•œ ê¸°ëŠ¥ êµ¬í˜„ ì•„ì§ ì•ˆë¨
 
 //					}
 //						else {
 //						int login_cnt = 5;
 //						
 //						login_cnt -= i;
-//						String message = "ë¡œê·¸?¸ ?‹¤?Œ¨\n" + "?‚¨?? ?šŸ?ˆ˜?Š” " + Integer.toString(login_cnt)
-//						+ "ë²? ?‚¨?•˜?Šµ?‹ˆ?‹¤.";
+//						String message = "ë¡œê·¸ì¸ ì‹¤íŒ¨\n" + "ë‚¨ì€ íšŸìˆ˜ëŠ” " + Integer.toString(login_cnt)
+//						+ "ë²ˆ ë‚¨ì•˜ìŠµë‹ˆë‹¤.";
 //						JOptionPane.showMessageDialog(null, message,
 //								"Message",JOptionPane.ERROR_MESSAGE);
 //					}
-			}
-
+				}
+				
+				
+			
 		});
-		btnNewButton.setFont(new Font("±¼¸²", Font.BOLD, 20));
-		btnNewButton.setBounds(267, 499, 210, 41);
-		contentPane.add(btnNewButton);
-
-//		JButton btnNewButton_1 = new JButton("Á¤º¸¼öÁ¤");
-//		btnNewButton_1.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//
-//				dispose();
-//				setVisible(true);
-////				new Accreditation(oos).setVisible(true);
-//
-//			}
-//		});
-//		btnNewButton_1.setFont(new Font("êµ´ë¦¼", Font.BOLD, 17));
-//		btnNewButton_1.setBounds(267, 622, 210, 41);
-//		contentPane.add(btnNewButton_1);
-
-		JButton btnNewButton_2 = new JButton("È¸¿ø°¡ÀÔ");
-		btnNewButton_2.addMouseListener(new MouseAdapter() {
+		login_Button.setFont(new Font("êµ´ë¦¼", Font.BOLD, 20));
+		login_Button.setBounds(267, 499, 210, 41);
+		contentPane.add(login_Button);
+		
+		JButton update_Button = new JButton("ë¹„ë°€ë²ˆí˜¸ ì°¾ê¸°");
+		update_Button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				
+				dispose();
+				setVisible(true);
+				new Accreditation(oos).setVisible(true);
+				
+			}
+		});
+		update_Button.setFont(new Font("êµ´ë¦¼", Font.BOLD, 17));
+		update_Button.setBounds(267, 622, 210, 41);
+		contentPane.add(update_Button);
+		
+		JButton join_Button = new JButton("íšŒì›ê°€ì…");
+		join_Button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
 				dispose();
 				setVisible(false);
 				try {
 					new EmployeeJoin(oos).setVisible(true);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					// e1.printStackTrace();
+					//e1.printStackTrace();
 				}
 			}
 		});
-		btnNewButton_2.setFont(new Font("êµ´ë¦¼", Font.BOLD, 20));
-		btnNewButton_2.setBounds(267, 565, 210, 41);
-		contentPane.add(btnNewButton_2);
-
+		join_Button.setFont(new Font("êµ´ë¦¼", Font.BOLD, 20));
+		join_Button.setBounds(267, 565, 210, 41);
+		contentPane.add(join_Button);
+		
+		
+		
 		setVisible(true);
-
+		
 		Thread t1 = new Thread(this);
 		t1.start();
+		
+		
 	}
+
+
+
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-
+		
+		
 		try {
 
 			while (true) {
-
+	
+				
+				
 				if (call) {
-
+					
+					
 					String resCom = (String) resMap.get("command");
 
-					System.out.println(resMap.size());
-					boolean result = (boolean) resMap.get("loginResult");
-
-					System.out.println(result);
-					if (result) { // cm = ClientMain
-						JOptionPane.showMessageDialog(null, "·Î±×ÀÎ¼º°ø");
-						emp = (EmpDTO) resMap.get("emp");
-						dispose();
-						setVisible(false);
 						
-						new MainViewFrame(oos,emp).setVisible(true);
 						
-						// ë¡œê·¸?¸ ?˜ë©? ê·? ?‹¤?Œ ë©”ì¸?šŒë©´ìœ¼ë¡? ?—°ê²?
-					} else {
-						JOptionPane.showMessageDialog(null, "·Î±×ÀÎ ½ÇÆĞ", "Message",
-								JOptionPane.ERROR_MESSAGE);
+						boolean result = (boolean) resMap.get("loginResult");
+					
+						
+						
+						if (result) { // cm = ClientMain
+							JOptionPane.showMessageDialog(null, "ë¡œê·¸ì¸ ë˜ì—ˆìŠµë‹ˆë‹¤!");
+							emp = (EmpDTO) resMap.get("emp");
+							dispose();
+							setVisible(false);
+							
+							new MainViewFrame(oos,emp).setVisible(true);
+							
+							// Ã«Â¡Å“ÃªÂ·Â¸?ÂÂ¸ ?ÂËœÃ«Â©? ÃªÂ·? ?â€¹Â¤?ÂÅ’ Ã«Â©â€Ã¬ÂÂ¸?Å¡Å’Ã«Â©Â´Ã¬Å“Â¼Ã«Â¡? ?â€”Â°ÃªÂ²?
+						} else {
+							JOptionPane.showMessageDialog(null, "ì•„ì´ë”” ë˜ëŠ” ë¹„ë°€ë²ˆí˜¸ê°€ í‹€ë ¸ìŠµë‹ˆë‹¤", "Message",
+									JOptionPane.ERROR_MESSAGE);
 
-					}
+						}
+						
+						
+						call=false;
 
-					call = false;
 
-				}else System.out.print("");
-
+					}else
+					System.out.printf("");
 			}
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
-
+		
+		
+		
+		
+		
+		
 	}
-
 }

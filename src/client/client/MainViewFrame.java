@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,10 +100,6 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		contentPane.add(deparLabel);
 
 		JButton createButten = new JButton("\uBC29\uB9CC\uB4E4\uAE30");
-		createButten.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		createButten.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -139,39 +136,57 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		joinButten.setFont(new Font("굴림", Font.PLAIN, 18));
 		joinButten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				
+				for(ChatInfo myChat : myChatList)
+				{
+					if(myChat.getChatListDTO().getChatId()==tChatId) {
+						
+						new ChatGUI(oos, myChat, emp);
+						break;
+						
+					}
+					
+				}
+				
+				
+				
 			}
 		});
 		joinButten.setBounds(466, 424, 171, 44);
 		contentPane.add(joinButten);
 
 		JButton logoutButten = new JButton("\uB85C\uADF8\uC544\uC6C3");
-		logoutButten.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+
 		logoutButten.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				
+				dispose();
+				setVisible(false);
+				try {
+					oos.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		logoutButten.setFont(new Font("굴림", Font.PLAIN, 18));
 		logoutButten.setBounds(466, 483, 171, 44);
 		contentPane.add(logoutButten);
 
-		JButton chatSearchButton = new JButton("");
-		chatSearchButton.setIcon(new ImageIcon(MainViewFrame.class.getResource("/client/icon/search.png")));
-		chatSearchButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		chatSearchButton.setBounds(597, 298, 40, 40);
-		contentPane.add(chatSearchButton);
-
-		chatSearchText = new JTextField();
-		chatSearchText.setText("\uBC29\uAC80\uC0C9");
-		chatSearchText.setColumns(10);
-		chatSearchText.setBounds(466, 298, 130, 40);
-		contentPane.add(chatSearchText);
+//		JButton chatSearchButton = new JButton("");
+//		chatSearchButton.setIcon(new ImageIcon(MainViewFrame.class.getResource("/client/icon/search.png")));
+//		chatSearchButton.setBounds(597, 298, 40, 40);
+//		contentPane.add(chatSearchButton);
+//
+//		chatSearchText = new JTextField();
+//		chatSearchText.setText("\uBC29\uAC80\uC0C9");
+//		chatSearchText.setColumns(10);
+//		chatSearchText.setBounds(466, 298, 130, 40);
+//		contentPane.add(chatSearchText);
 
 		JButton empSearchButton = new JButton("");
 		empSearchButton.addMouseListener(new MouseAdapter() {
@@ -231,8 +246,10 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 						int tEmpid = (int) empModel.getValueAt(i, 4);
 						String tName = (String)empModel.getValueAt(i,2);
+						String tJob = (String)empModel.getValueAt(i,1);
 						
 						EmpDTO tUser = new EmpDTO();
+						tUser.setJobTitle(tJob);
 						tUser.setEmployeeId(tEmpid);
 						tUser.setName(tName);
 						tEmpIds.add(tUser);
@@ -260,7 +277,9 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 				if (e.getSource() == chatTable) {
 					JTable jtable = (JTable) e.getSource();
 					int row = jtable.getSelectedRow();
-					tChatId = (int) chatModel.getValueAt(row, 3);
+					
+					tChatId = (int) chatModel.getValueAt(row, 2);
+					
 
 				}
 
@@ -309,7 +328,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 					case "afterMain":
 
 						empList = (List<EmpDTO>) resMap.get("empList");
-						List<ChatInfo> roomList = (List<ChatInfo>) resMap.get("roomList");
+						myChatList= (List<ChatInfo>) resMap.get("roomList");
 
 						if (empList != null) {
 
@@ -325,13 +344,14 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 						}
 
-						if (roomList != null) {
+						if (myChatList != null) {
 							chatModel.setNumRows(0);
 							System.out.println("chat 테이블 생성");
-							for (ChatInfo myChat : roomList) {
+							for (ChatInfo myChat : myChatList) {
 
+				
 								chatModel.addRow(new Object[] { myChat.getChatListDTO().getChatName(),
-										"" + myChat.getChatUserDTO().size() });
+										"" + myChat.getChatUserDTO().size(),myChat.getChatListDTO().getChatId()});
 
 							}
 
@@ -373,7 +393,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 						ChatInfo room = (ChatInfo)resMap.get("room");
 						System.out.println(room);
 						new ChatGUI(oos, room, emp);
-						
+					
 						call=false;
 						break;
 					
