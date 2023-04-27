@@ -164,6 +164,8 @@ public class MulThread extends Thread {
 					List<FileDTO> fileList = service.findFile(fchatId);
 					resMap.put("command", "afterFindFileList"); 
 					resMap.put("fileList", fileList);
+					
+					System.out.println(fileList);
 					break;
 
 				case "downFile": // service에 해당 파일을 찾아서 파일 내용을 읽와서 Rcv로 보냄
@@ -182,10 +184,21 @@ public class MulThread extends Thread {
 					int schatId = (Integer) reqMap.get("chatId");
 					int employeeId = (Integer) reqMap.get("employeeId");
 					String scontent = (String) reqMap.get("content");
+					Boolean writeFilePath;
+					resMap.put("command", "afterSaveFile");
 					try {
 						boolean saveFile = service.SaveFile(employeeId, schatId, fileName);
-						if(!saveFile)	System.out.println("saveFile X");
-						else 	service.writeFile(employeeId, schatId, fileName, scontent); // true로 반환
+						if(!saveFile) {
+							boolean alarm = true;
+							reqMap.put("alarm", alarm);
+						}
+						else {
+							service.writeFile(employeeId, schatId, fileName, scontent);
+							boolean alarm = false;
+	
+							
+							
+						}
 					} catch (Exception e) {}					
 					break;
 					
@@ -397,7 +410,7 @@ public class MulThread extends Thread {
 
 				resMap.put("chat", sendChat);
 
-				System.out.println("초대 출력");
+				
 				for (MulThread roomThread : roomThreads) {
 
 					roomThread.sendChat(resMap);

@@ -81,10 +81,7 @@ public class RcvThread extends Thread {
 					case "afterFindFileList": // ������ ���� �� fileList�� down gui���� ����
 						FileDownGUIPlus.call = true;
 						FileDownGUIPlus.resMap = resMap;
-						if (resMap == null)
-							System.out.println("yes");
-						else
-							System.out.println("yes");
+	
 						break;
 
 					case "downContent": // �����κ��� �� file������ downgui���� ����
@@ -92,9 +89,11 @@ public class RcvThread extends Thread {
 						FileDownGUIPlus.resMap = resMap;
 						break;
 
-					case "saveFileFail":
+					case "afterSaveFile":
+						if((boolean)resMap.get("alarm")) {
 						FileUpGUI.call = true;
 						FileUpGUI.resMap = resMap;
+						}
 						break;
 
 					case "afterReadChat":

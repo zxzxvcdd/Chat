@@ -615,8 +615,8 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 
 	}
-	
-	public List<FileDTO> findFileList(int chatId) { // �߰�����
+
+	public List<FileDTO> findFileList(int chatId) { 
 		String sql = "select * from files where chat_id = ?";
 		try {
 			pst = con.prepareStatement(sql);
@@ -637,6 +637,7 @@ public class ServerDAOImpl implements ServerDAO {
 				file.setUploadTime(rs.getDate("upload_time"));
 				fileList.add(file);
 			}			
+
 			return fileList;
 
 		} catch (SQLException e) {
@@ -652,37 +653,45 @@ public class ServerDAOImpl implements ServerDAO {
 
 	@Override
 	public boolean saveFile(FileDTO file) {
-		// TODO Auto-generated method stub
-
-		String sql = "insert into files(file_id, file_path, employee_id, chat_id, file_name)"
-				+ " values(file_seq_NEXTVAL, ?, ?, ?, ?)";
-
-		try {
-			pst = con.prepareStatement(sql);
-
-			pst.setString(1, file.getFilePath());
-			pst.setInt(2, file.getEmployeeId());
-			pst.setInt(3, file.getChatId());
-			pst.setString(4, file.getFileName());
-
-			int result = pst.executeUpdate();
-
-			if (result >= 1) {
-				return true;
-			} else {
-				return false;
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-
-			System.out.println("saveFile error");
-
-			return false;
-
-		}
-
-	}
+	      // TODO Auto-generated method stub
+	      
+	      String sql = "insert into files(file_id, file_path, employee_id, chat_id, file_name)"
+	            +             " values(file_seq.NEXTVAL, ?, ?, ?, ?)";
+	         
+	      
+	      try {
+	         pst = con.prepareStatement(sql);
+	         
+	         pst.setString(1, file.getFilePath());
+	         pst.setInt(2, file.getEmployeeId());
+	         pst.setInt(3, file.getChatId());
+	         pst.setString(4, file.getFileName());
+	         
+	         
+	         
+	         int result = pst.executeUpdate();
+	         
+	          
+	         
+	         if(result>=1) {
+	            return true;
+	         }else {
+	            return false;
+	         }
+	         
+	         
+	         
+	      } catch (SQLException e) {
+	         e.printStackTrace();
+	         
+	         System.out.println("saveFile error");
+	         
+	         return false;
+	         
+	      }
+	   
+	      
+	   }
 
 	@Override
 	public FileDTO findFile(FileDTO file) {
@@ -692,8 +701,9 @@ public class ServerDAOImpl implements ServerDAO {
 			pst = con.prepareStatement(sql);
 
 			pst.setInt(1, file.getFileId());
-
+			
 			rs = pst.executeQuery();
+			
 			rs.next();
 			file.setEmployeeId(rs.getInt("employee_id"));
 			file.setChatId(rs.getInt("chat_id"));

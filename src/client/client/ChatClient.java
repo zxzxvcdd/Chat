@@ -10,15 +10,18 @@ import java.util.List;
 
 public class ChatClient {
 	
+	
 	public static List<ChatGUI> chatList = new ArrayList<ChatGUI>();
 
 
     
 	public static void main(String[] args) {
 	
-		Socket s1;
 		ObjectInputStream ois;
 		ObjectOutputStream oos;
+		
+		Socket s1;
+		
 
 		
 		
@@ -27,7 +30,7 @@ public class ChatClient {
 			
 			
 			s1 = new Socket("127.0.0.1", 1115);
-			System.out.println(s1.getInetAddress().getHostAddress() + " �����");
+			System.out.println(s1.getInetAddress().getHostAddress() + "연결 중");
 
 			
 			

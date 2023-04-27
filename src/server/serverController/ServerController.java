@@ -30,7 +30,7 @@ public class ServerController {
 		
 		while (true) {
 			s1 = ss1.accept();
-			System.out.println("Á¢¼ÓÁÖ¼Ò: " + s1.getInetAddress() + " , Á¢¼ÓÆ÷Æ®: " + s1.getPort());
+			System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½: " + s1.getInetAddress() + " , í¬íŠ¸ë²ˆí˜¸ : " + s1.getPort());
 			
 			MulThread tServer = new MulThread(s1);
 			
@@ -38,7 +38,7 @@ public class ServerController {
 
 			threadList.add(tServer);
 			
-			System.out.println("Á¢¼ÓÀÚ ¼ö : " + threadList.size());
+			System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ : " + threadList.size());
 			
 			
 			

@@ -149,14 +149,19 @@ public class FileUpGUI extends JFrame implements Runnable {
 				setVisible(false);
 			}
 		});
+		
+		setVisible(true);
+		
+		
       Thread t1 = new Thread(this);
 		t1.start();
 	}
 	
 	@Override
 	public void run() {
-		try {
+		
 			while (true) {
+				try {
 				if (call) {
 					String resCom = (String) resMap.get("command");
 					
@@ -164,8 +169,10 @@ public class FileUpGUI extends JFrame implements Runnable {
 					
 					
 					}
-				}
+				}else System.out.print("");
+			}catch(Exception e) {
+				
 			}
-		} finally {}
+		}
 	}
 }
