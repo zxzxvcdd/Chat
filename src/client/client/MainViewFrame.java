@@ -247,8 +247,8 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 			}
 
 		});
-
-		empTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+//		empTable.setColumnSelectionAllowed(true);
+//		empTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		chatTable = new JTable(chatModel);
 		chatTable.setBounds(64, 339, 359, 21);
@@ -379,10 +379,22 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 						call = false;
 						break;
 
-					case "afterUpdate":
+					case "updateRoom":
 
 						myChatList= (List<ChatInfo>) resMap.get("roomList");
-						System.out.println("update");
+						
+						
+						if (myChatList != null) {
+							chatModel.setNumRows(0);
+							System.out.println("chat 테이블 생성");
+							for (ChatInfo myChat : myChatList) {
+
+								chatModel.addRow(new Object[] { myChat.getChatListDTO().getChatName(),
+										"" + myChat.getChatUserDTO().size() });
+
+							}
+						}
+					
 						call = false;
 						break;
 

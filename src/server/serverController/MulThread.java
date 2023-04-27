@@ -171,10 +171,12 @@ public class MulThread extends Thread {
 					resMap.put("empList", empList);
 					
 					String online ="";
+					if(ServerController.threadList.size()>0) {
 					for(MulThread th : ServerController.threadList) {
 						
 						online += th.getEmp().getName() + " "+ th.getEmp().getJobTitle()+"\n";
 						
+					}
 					}
 
 					resMap.put("online", online);

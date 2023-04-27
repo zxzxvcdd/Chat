@@ -169,76 +169,76 @@ public class EmployeeJoin extends JFrame implements Runnable {
 				// 	---- 그런다음 Pattern.matches()로 정규표현식과 입력 값을 
 				//비교 하고 boolean형으로 넘겨준다
 //				
-//				boolean id_pt = false;
-//				boolean pw_pt = false;
-//				boolean name_pt = false;
-//				boolean department_pt = false;
-//				boolean tel_pt = false;
-//				boolean title_pt = false;
-//				
-//				if(employeeId_textField.getText().isEmpty()) {}
-//				else {
+				boolean id_pt = false;
+				boolean pw_pt = false;
+				boolean name_pt = false;
+				boolean department_pt = false;
+				boolean tel_pt = false;
+				boolean title_pt = false;
+				
+				if(employeeId_textField.getText().isEmpty()) {}
+				else {
 				employee_id = employeeId_textField.getText();
-//				id_pt = Pattern.matches("^[0-9]*$", employee_id);
-//				}
-//				
-//				if(pw_textField.getText().isEmpty()) {}
-//				else {
+				id_pt = Pattern.matches("^[0-9]*$", employee_id);
+				}
+				
+				if(pw_textField.getText().isEmpty()) {}
+				else {
 				pw = pw_textField.getText();
-//				pw_pt = Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])"		//숫자,문자,특수문자 포함 8자 이상
-//						+ "[A-Za-z\\d$@$!%*#?&]{8,}$", pw);
-//				}
-//				
+				pw_pt = Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])"		//숫자,문자,특수문자 포함 8자 이상
+						+ "[A-Za-z\\d$@$!%*#?&]{8,}$", pw);
+				}
+				
 				pw_check = checkPw_textField.getText();
 //				
-//				if(name_textField.getText().isEmpty()) {}
-//				else {
+				if(name_textField.getText().isEmpty()) {}
+				else {
 				name = name_textField.getText();
-//				name_pt = Pattern.matches("^[가-힣]*$", name);		// 한글만 가능합니다
-//				}
+				name_pt = Pattern.matches("^[가-힣]*$", name);		// 한글만 가능합니다
+				}
 //				
-//				if(departmentId_textField.getText().isEmpty()) {}
-//				else {
+				if(departmentId_textField.getText().isEmpty()) {}
+				else {
 				department_id = departmentId_textField.getText();
-//				department_pt = Pattern.matches("^[0-9]*$", department_id);
-//				}
-//				
-//				if(tel_textField.getText().isEmpty()) {}
-//				else {
+				department_pt = Pattern.matches("^[0-9]*$", department_id);
+				}
+				
+				if(tel_textField.getText().isEmpty()) {}
+				else {
 				tel = tel_textField.getText();
-//				tel_pt = Pattern.matches("^\\d{2,3}-\\d{3,4}-\\d{4}$"	//숫자랑 (-)하이픈 입력만 가능합니다
-//						, tel);
-//				}
-//				
-//				if(jobTitle_textField.getText().isEmpty()) {}
-//				else {
+				tel_pt = Pattern.matches("^\\d{2,3}-\\d{3,4}-\\d{4}$"	//숫자랑 (-)하이픈 입력만 가능합니다
+						, tel);
+				}
+				
+				if(jobTitle_textField.getText().isEmpty()) {}
+				else {
 				job_title = jobTitle_textField.getText();
-// 				title_pt = Pattern.matches("^[가-힣]*$", job_title);		//한글만 가능합니다
-//				}
-// 				//---------졍규표현식과 비교 후 false이면 에러 메시지 창 호출
-// 				
-// 				if(id_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "아이디를 확인해주세요(사원번호만 가능합니다"
-// 							, "ID ERROR", JOptionPane.ERROR_MESSAGE);
-// 				}else if(pw_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "비밀번호를 확인해 주세요 숫자, 문자, 특수문자 포함 8자이상",
-// 					"Password ERROE", JOptionPane.ERROR_MESSAGE);
-// 				}else if(!pw_check.equals(pw) ) {
-// 					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다",
-// 							"Password Check ERROR",JOptionPane.ERROR_MESSAGE);
-// 				}else if(name_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "이름을 확인해주세요(한글만 가능합니다)",
-// 							"Name ERROE",JOptionPane.ERROR_MESSAGE);
-// 				}else if(department_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "부서번호를 확인해주세요(부서번호만 입력해주세요)",
-// 							"Departmnet ID ERROR",JOptionPane.ERROR_MESSAGE);
-// 				}else if(tel_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "전화번호를 확인해주세요(전화번호만 입력해주세요)",
-// 							"Phone Number ERROR",JOptionPane.ERROR_MESSAGE);
-//				}else if(title_pt == false) {
-// 					JOptionPane.showMessageDialog(null, "직책을 확인해주세요(한글만 가능합니다)",
-// 							"Job Title ERROR",JOptionPane.ERROR_MESSAGE);
-// 				}else { // ------
+ 				title_pt = Pattern.matches("^[가-힣]*$", job_title);		//한글만 가능합니다
+				}
+ 				//---------졍규표현식과 비교 후 false이면 에러 메시지 창 호출
+ 				
+ 				if(id_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "아이디를 확인해주세요(사원번호만 가능합니다"
+ 							, "ID ERROR", JOptionPane.ERROR_MESSAGE);
+ 				}else if(pw_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "비밀번호를 확인해 주세요 숫자, 문자, 특수문자 포함 8자이상",
+ 					"Password ERROE", JOptionPane.ERROR_MESSAGE);
+ 				}else if(!pw_check.equals(pw) ) {
+ 					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다",
+ 							"Password Check ERROR",JOptionPane.ERROR_MESSAGE);
+ 				}else if(name_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "이름을 확인해주세요(한글만 가능합니다)",
+ 							"Name ERROE",JOptionPane.ERROR_MESSAGE);
+ 				}else if(department_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "부서번호를 확인해주세요(부서번호만 입력해주세요)",
+ 							"Departmnet ID ERROR",JOptionPane.ERROR_MESSAGE);
+ 				}else if(tel_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "전화번호를 확인해주세요(전화번호만 입력해주세요)",
+ 							"Phone Number ERROR",JOptionPane.ERROR_MESSAGE);
+				}else if(title_pt == false) {
+ 					JOptionPane.showMessageDialog(null, "직책을 확인해주세요(한글만 가능합니다)",
+ 							"Job Title ERROR",JOptionPane.ERROR_MESSAGE);
+ 				}else { // ------
  					
  					int id = Integer.parseInt(employee_id);
  					int d_id = Integer.parseInt(department_id);
@@ -258,12 +258,10 @@ public class EmployeeJoin extends JFrame implements Runnable {
 						// TODO: handle exception
 					}
  					
-// 					ClientMain cm = new ClientMain();	//ClientMain 객체를 생성한다
-// 					String s = cm.check_Join(empdto);
+
  					
  					
- 					
-// 				}
+ 				}
  				
  				
 				

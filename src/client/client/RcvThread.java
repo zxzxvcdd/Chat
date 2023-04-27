@@ -179,6 +179,7 @@ public class RcvThread extends Thread {
 						
 					case "updateRoom":
 						
+						System.out.println("======================");
 						int upIndex =0;
 						for (ChatGUI chat : ChatClient.chatList) {
 							
@@ -187,9 +188,9 @@ public class RcvThread extends Thread {
 
 								chat.setResMap(resMap);
 								chat.setCall(true);
-								break;
 
 							}
+							
 							
 							MainViewFrame.call = true;
 							MainViewFrame.resMap = resMap;
