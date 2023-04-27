@@ -55,20 +55,21 @@ public class RcvThread extends Thread {
 						MainViewFrame.resMap = resMap;
 
 						break;
-//
-//				case "afterUpdate":
-//						
-//					Employee_Update.call = true;
-//					Employee_Update.resMap = resMap;
-//					
-//					break;
-//					
-//				case "afterAccreditation":
-//					
-//					Accreditation.call = true;
-//					Accreditation.resMap = resMap;
-//					break;
 
+					case "afterAccreditation":
+						
+						System.out.println("r"+resMap);
+						Accreditation.resMap = resMap;
+						Accreditation.call = true;
+
+						break;
+						
+					case "afterUpdate":
+						EmployeeUpdate.resMap = resMap;
+						EmployeeUpdate.call = true;
+						
+						System.out.println(EmployeeUpdate.call);
+						break;
 
 					case "afterSelectByName":
 
@@ -141,9 +142,9 @@ public class RcvThread extends Thread {
 						
 		
 						if(ChatClient.chatList.size()!=0) {
-							System.out.println(1);
+							
 						for (ChatGUI chat : ChatClient.chatList) {
-							System.out.println(2);
+							
 								
 							int rcvId = (Integer) resMap.get("chatId");
 							if (chat.getRoom().getChatListDTO().getChatId() == rcvId) {

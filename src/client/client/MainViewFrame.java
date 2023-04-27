@@ -47,7 +47,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 	private JTable chatTable;
 
 	private List<EmpDTO> tEmpIds = new ArrayList<EmpDTO>();
-	private ChatInfo tChat=null;
+	private ChatInfo tChat = null;
 
 	private String[] empTabNames = { "부서", "직급", "이름", "번호" };
 	private DefaultTableModel empModel = new DefaultTableModel(empTabNames, 0);
@@ -112,12 +112,11 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 					System.out.println(tEmpIds);
 
-					
 					reqMap = new HashMap<Object, Object>();
 					reqMap.put("command", "invite");
-					reqMap.put("newUsers",tEmpIds );
+					reqMap.put("newUsers", tEmpIds);
 					reqMap.put("newRoom", true);
-					
+
 					try {
 
 						oos.writeObject(reqMap);
@@ -139,12 +138,10 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		joinButten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				if(tChat!=null) {
-						new ChatGUI(oos, tChat, emp).setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				if (tChat != null) {
+					new ChatGUI(oos, tChat, emp).setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				}
-	
-				
-				
+
 			}
 		});
 		joinButten.setBounds(466, 424, 171, 44);
@@ -155,7 +152,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		logoutButten.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+
 				dispose();
 				setVisible(false);
 				try {
@@ -164,7 +161,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
+
 			}
 		});
 		logoutButten.setFont(new Font("굴림", Font.PLAIN, 18));
@@ -239,25 +236,23 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 					for (int i : rows) {
 
 						EmpDTO tUser = empList.get(i);
-	
+
 						tEmpIds.add(tUser);
 
 					}
-					
-					System.out.println("선택된 행수" +tEmpIds.size());
-				
+
+					System.out.println("선택된 행수" + tEmpIds.size());
+
 				}
 			}
 
 		});
 
-	
 		empTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		chatTable = new JTable(chatModel);
 		chatTable.setBounds(64, 339, 359, 21);
 		chatTable.addMouseListener(new MouseAdapter() {
-			
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -265,9 +260,8 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 				if (e.getSource() == chatTable) {
 					JTable jtable = (JTable) e.getSource();
 					int row = jtable.getSelectedRow();
-					
+
 					tChat = myChatList.get(row);
-					
 
 				}
 
@@ -379,8 +373,16 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 						System.out.println("방생성 이벤트");
 						ChatInfo room = (ChatInfo) resMap.get("room");
 						System.out.println(room);
-						new ChatGUI(oos, room, emp);
+						new ChatGUI(oos, room, emp).setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						
 
+						call = false;
+						break;
+
+					case "afterUpdate":
+
+						myChatList= (List<ChatInfo>) resMap.get("roomList");
+						System.out.println("update");
 						call = false;
 						break;
 

@@ -245,8 +245,7 @@ public class ServerDAOImpl implements ServerDAO {
 	public boolean modifyEmployees(EmpDTO emp) {
 		// TODO Auto-generated method stub
 
-		String sql = "update employees" + " set (pw, name, deparment_id, tel, job_title)"
-				+ " = (?, ?, ?, ?, ?) where employee_id = ?";
+		String sql = "update employees" + " set pw = ?, name = ?, department_id =?, tel = ?, job_title = ? where employee_id = ?";
 
 		try {
 			pst = con.prepareStatement(sql);

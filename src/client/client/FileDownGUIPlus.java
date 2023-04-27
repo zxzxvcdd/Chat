@@ -140,8 +140,10 @@ public class FileDownGUIPlus extends JFrame implements Runnable {// implements R
 						int op = JOptionPane.showOptionDialog(null,
 								"해당 파일은 존재하는 파일 입니다 \n 취소하시려면 NO \n 계속하시려면 YES를 눌려주세요", "알림창",
 								JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "NO");
+						System.out.println("op"+op);
 						if (op == 0) {
 							// 클라이언트가 고른 file dto를 multhread로 보냄
+							
 							reqMap = new HashMap<Object, Object>();
 							String command = "downFile";
 							reqMap.put("command", command);
@@ -166,6 +168,14 @@ public class FileDownGUIPlus extends JFrame implements Runnable {// implements R
 						reqMap.put("command", command);
 						reqMap.put("fdto", fdto);
 						reqMap.put("reFile", 1);
+						
+						try {
+							oos.writeObject(reqMap);
+							oos.flush();
+
+						} catch (IOException e1) {
+						}
+						
 					}
 				}
 				txt_name.setText("");

@@ -57,7 +57,7 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 	private JTextArea userList;
 	private JButton fileDownBT;
 
-	private String[] empTabNames = { "id", "이름" };
+	private String[] empTabNames = { "사번", "이름" };
 	private DefaultTableModel empModel = new DefaultTableModel(empTabNames, 0);
 	private JTable empTable;
 
@@ -192,9 +192,6 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 			}
 		});
 
-		empTable.getColumn("id").setWidth(0);
-		empTable.getColumn("id").setMaxWidth(0);
-		empTable.getColumn("id").setMinWidth(0);
 		empTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		userScrollPane = new JScrollPane(empTable);

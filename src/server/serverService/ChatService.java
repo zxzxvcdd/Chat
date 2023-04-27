@@ -109,6 +109,7 @@ public class ChatService {
 		
 		userList = dao.findChatUser(checkMap);
 
+		System.out.println("service"+userList);
 
 		if (userList != null) {
 			for (ChatUserDTO user : userList) {

@@ -162,7 +162,7 @@ public class Login extends JFrame implements Runnable {
 		login_Button.setBounds(267, 499, 210, 41);
 		contentPane.add(login_Button);
 		
-		JButton update_Button = new JButton("비밀번호 찾기");
+		JButton update_Button = new JButton("회원정보수정");
 		update_Button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

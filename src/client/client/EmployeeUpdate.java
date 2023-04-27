@@ -269,15 +269,18 @@ public class EmployeeUpdate extends JFrame implements Runnable{
 			while(true) {
 				
 				if(call) {
+					
 
-						boolean result = (boolean) resMap.get("updateResult");
+						boolean result = (boolean) resMap.get("Updateresult");
 						
 						if(result) { 
-							  
+							
+						dispose();
 						  setVisible(false); 
 						  JOptionPane.showMessageDialog(null, "정보수정 완료!", null,
 						  JOptionPane.PLAIN_MESSAGE);
 						  //메인화면 띄움
+						  new Login(oos);
 						  
 						  }else {
 							  JOptionPane.showMessageDialog(null, "정보수정 실패!", null,
@@ -295,6 +298,7 @@ public class EmployeeUpdate extends JFrame implements Runnable{
 			
 		}catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 	}

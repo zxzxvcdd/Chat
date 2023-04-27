@@ -88,6 +88,33 @@ public class MulThread extends Thread {
 					}
 
 					break;
+					
+			case "accreditation":
+					
+					emp = (EmpDTO)reqMap.get("emp");
+					System.out.println("accre:"+emp);
+					boolean accResult = service.accreditationEmployee(emp.getEmployeeId()); 
+					System.out.println("Mul1:"+emp.getEmployeeId());
+					System.out.println("Mul2:accreditationresult:"+accResult);
+					
+					
+						resMap.put("command", "afterAccreditation");
+						resMap.put("accResult", accResult);
+					
+					System.out.println(resMap);
+					break;
+					
+				case "update":
+					
+					emp = (EmpDTO)reqMap.get("emp");
+					System.out.println("update: "+emp);
+					boolean Updateresult = service.updateEmployee(emp);
+					System.out.println("Updateresult: "+Updateresult);
+					
+					resMap.put("command", "afterUpdate");
+					resMap.put("Updateresult", Updateresult);
+					
+					break;
 
 				case "login":
 
@@ -135,6 +162,8 @@ public class MulThread extends Thread {
 
 					roomList = service.findChat(checkMap);
 
+					System.out.println("메인"+roomList);
+					
 					empList = service.findAllEmployees();
 
 					resMap.put("command", "afterMain");
@@ -285,7 +314,7 @@ public class MulThread extends Thread {
 
 						List<EmpDTO> newUsers = (List<EmpDTO>) reqMap.get("newUsers");
 
-				
+						
 						
 
 						if (chatName == null) {
@@ -310,6 +339,8 @@ public class MulThread extends Thread {
 						updateRoom.setChatListDTO(newRoom);
 						int cnt = 0;
 						String failUsers = "";
+						
+						invite(updateRoom, emp);
 						for (EmpDTO newUser : newUsers) {
 
 							resMap = invite(updateRoom, newUser);
@@ -322,6 +353,7 @@ public class MulThread extends Thread {
 							}
 
 						}
+						updateRoom(updateRoom.getChatListDTO().getChatId());
 
 				
 						
@@ -390,7 +422,7 @@ public class MulThread extends Thread {
 	public HashMap<Object, Object> invite(ChatInfo updateRoom, EmpDTO newEmp) throws Exception {
 
 		updateRoom = service.inviteEmployees(updateRoom, newEmp);
-
+	
 		HashMap<Object, Object> resMap = new HashMap<Object, Object>();
 
 		resMap.put("chatId", updateRoom.getChatListDTO().getChatId());
@@ -398,6 +430,8 @@ public class MulThread extends Thread {
 		
 		if (updateRoom != null) {
 
+			//방정보 업데이트 후 쓰레드 반환
+			System.out.println("findChatThread");
 			List<MulThread> roomThreads = findChatThread(updateRoom, true);
 
 			boolean updateResult;
@@ -413,6 +447,7 @@ public class MulThread extends Thread {
 			updateResult = service.writeChat(updateRoom, updateString);
 
 			}
+			
 			if (updateResult) {
 
 				String sendChat = service.readChat(updateRoom);
@@ -425,6 +460,7 @@ public class MulThread extends Thread {
 					roomThread.sendChat(resMap);
 
 				}
+				
 
 				resMap.remove("chat");
 
@@ -466,6 +502,9 @@ public class MulThread extends Thread {
 
 	public List<MulThread> findChatThread(ChatInfo room, boolean update) throws IOException {
 
+		
+		System.out.println(room);
+		
 		List<MulThread> roomThreads = new ArrayList<MulThread>();
 
 		Set<Integer> userIdList = new HashSet<Integer>();
@@ -498,6 +537,7 @@ public class MulThread extends Thread {
 
 					}
 
+					System.out.println("업데이트");
 					mulThread.updateRoom(chatId);
 
 				}
