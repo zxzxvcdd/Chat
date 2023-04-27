@@ -13,12 +13,12 @@ public class ChatClient {
 	
 	public static List<ChatGUI> chatList = new ArrayList<ChatGUI>();
 
-
+	static ObjectOutputStream oos;
     
 	public static void main(String[] args) {
 	
 		ObjectInputStream ois;
-		ObjectOutputStream oos;
+		
 		
 		Socket s1;
 		

@@ -140,7 +140,16 @@ public class MulThread extends Thread {
 					resMap.put("command", "afterMain");
 					resMap.put("roomList", roomList);
 					resMap.put("empList", empList);
+					
+					String online ="";
+					for(MulThread th : ServerController.threadList) {
+						
+						online += th.getEmp().getName() + " "+ th.getEmp().getJobTitle()+"\n";
+						
+					}
 
+					resMap.put("online", online);
+					
 					break;
 
 				case "findChat":

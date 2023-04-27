@@ -15,10 +15,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
@@ -42,20 +42,21 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 	DefaultTableModel model1, model2;
 	int empId;
 	List<ChatInfo> myChatList;
-	private JList sawonList;
+	private JTextArea onlineEmp;
 	private JTable empTable;
 	private JTable chatTable;
 
 	private List<EmpDTO> tEmpIds = new ArrayList<EmpDTO>();
-	private int tChatId;
+	private ChatInfo tChat=null;
 
-	private String[] empTabNames = { "부서", "직급", "이름", "번호", "id" };
+	private String[] empTabNames = { "부서", "직급", "이름", "번호" };
 	private DefaultTableModel empModel = new DefaultTableModel(empTabNames, 0);
 
-	private String[] chatTabNames = { "채팅방 이름", "채팅방 인원", "id" };
+	private String[] chatTabNames = { "채팅방 이름", "채팅방 인원" };
 	private DefaultTableModel chatModel = new DefaultTableModel(chatTabNames, 0);
 	private List<EmpDTO> empList;
 	private EmpDTO emp;
+	private String online;
 
 	/**
 	 * Create the frame.
@@ -90,9 +91,10 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		onlineSawon.setBounds(466, 77, 171, 40);
 		contentPane.add(onlineSawon);
 
-		sawonList = new JList();
-		sawonList.setBounds(466, 120, 171, 150);
-		contentPane.add(sawonList);
+		onlineEmp = new JTextArea();
+		onlineEmp.setBounds(476, 127, 171, 150);
+		onlineEmp.setEditable(false);
+		contentPane.add(onlineEmp);
 
 		JLabel deparLabel = new JLabel("\uC870\uC9C1\uB3C4");
 		deparLabel.setFont(new Font("굴림", Font.PLAIN, 22));
@@ -136,19 +138,11 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 		joinButten.setFont(new Font("굴림", Font.PLAIN, 18));
 		joinButten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				
-				for(ChatInfo myChat : myChatList)
-				{
-					if(myChat.getChatListDTO().getChatId()==tChatId) {
-						
-						new ChatGUI(oos, myChat, emp);
-						break;
-						
-					}
-					
+
+				if(tChat!=null) {
+						new ChatGUI(oos, tChat, emp).setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				}
-				
+	
 				
 				
 			}
@@ -244,14 +238,8 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 					}
 					for (int i : rows) {
 
-						int tEmpid = (int) empModel.getValueAt(i, 4);
-						String tName = (String)empModel.getValueAt(i,2);
-						String tJob = (String)empModel.getValueAt(i,1);
-						
-						EmpDTO tUser = new EmpDTO();
-						tUser.setJobTitle(tJob);
-						tUser.setEmployeeId(tEmpid);
-						tUser.setName(tName);
+						EmpDTO tUser = empList.get(i);
+	
 						tEmpIds.add(tUser);
 
 					}
@@ -263,14 +251,14 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 		});
 
-		empTable.getColumn("id").setWidth(0);
-		empTable.getColumn("id").setMaxWidth(0);
-		empTable.getColumn("id").setMinWidth(0);
+	
 		empTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		chatTable = new JTable(chatModel);
 		chatTable.setBounds(64, 339, 359, 21);
 		chatTable.addMouseListener(new MouseAdapter() {
+			
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
@@ -278,7 +266,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 					JTable jtable = (JTable) e.getSource();
 					int row = jtable.getSelectedRow();
 					
-					tChatId = (int) chatModel.getValueAt(row, 2);
+					tChat = myChatList.get(row);
 					
 
 				}
@@ -286,9 +274,6 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 			}
 
 		});
-		chatTable.getColumn("id").setWidth(0);
-		chatTable.getColumn("id").setMaxWidth(0);
-		chatTable.getColumn("id").setMinWidth(0);
 		chatTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		JScrollPane scrollPane = new JScrollPane(empTable);
@@ -328,8 +313,11 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 					case "afterMain":
 
 						empList = (List<EmpDTO>) resMap.get("empList");
-						myChatList= (List<ChatInfo>) resMap.get("roomList");
+						myChatList = (List<ChatInfo>) resMap.get("roomList");
 
+						online = (String) resMap.get("online");
+
+						onlineEmp.setText(online);
 						if (empList != null) {
 
 							empModel.setNumRows(0);
@@ -338,7 +326,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 							for (EmpDTO emp : empList) {
 
 								empModel.addRow(new Object[] { emp.getDepartmentName(), emp.getJobTitle(),
-										emp.getName(), emp.getTel(), emp.getEmployeeId() });
+										emp.getName(), emp.getTel() });
 
 							}
 
@@ -349,9 +337,8 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 							System.out.println("chat 테이블 생성");
 							for (ChatInfo myChat : myChatList) {
 
-				
 								chatModel.addRow(new Object[] { myChat.getChatListDTO().getChatName(),
-										"" + myChat.getChatUserDTO().size(),myChat.getChatListDTO().getChatId()});
+										"" + myChat.getChatUserDTO().size() });
 
 							}
 
@@ -365,7 +352,7 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 
 						String printEmpList = "";
 						empList = (List<EmpDTO>) resMap.get("empList");
-						System.out.println("크기" + empList.size());
+
 						if (empList.size() != 0) {
 
 							empModel.setNumRows(0);
@@ -386,21 +373,21 @@ public class MainViewFrame extends JFrame implements Runnable, ActionListener, L
 						call = false;
 
 						break;
-						
+
 					case "afterCreateRoom":
-						
+
 						System.out.println("방생성 이벤트");
-						ChatInfo room = (ChatInfo)resMap.get("room");
+						ChatInfo room = (ChatInfo) resMap.get("room");
 						System.out.println(room);
 						new ChatGUI(oos, room, emp);
-					
-						call=false;
+
+						call = false;
 						break;
-					
 
 					}
 
-				} else System.out.printf("");
+				} else
+					System.out.printf("");
 			}
 
 		} catch (Exception e) {

@@ -213,7 +213,7 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 
 
 				try {
-					new FileUpGUI(oos, emp.getEmployeeId(), room.getChatListDTO().getChatId());
+					new FileUpGUI(oos, emp.getEmployeeId(), room.getChatListDTO().getChatId()).setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -234,7 +234,7 @@ public class ChatGUI extends JFrame implements Runnable, ActionListener {
 
 				
 				try {
-					new FileDownGUIPlus(oos, room.getChatListDTO().getChatId());
+					new FileDownGUIPlus(oos, room.getChatListDTO().getChatId()).setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
